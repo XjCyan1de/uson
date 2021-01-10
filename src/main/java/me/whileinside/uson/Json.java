@@ -22,10 +22,9 @@ import me.whileinside.uson.reader.StreamJsonReader;
 import me.whileinside.uson.indent.Indent;
 import me.whileinside.uson.indent.IndentType;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -91,12 +90,41 @@ public final class Json {
         return fromJson(new BufferedJsonReader(json));
     }
 
-    public JsonNode fromJson(InputStream is) {
+    public JsonNode fromJson(InputStream is) throws IOException {
         return fromJson(new InputStreamReader(is));
     }
 
-    public JsonNode fromJson(Reader reader) {
-        return fromJson(new StreamJsonReader(reader, _bufSize));
+    public JsonNode fromJson(Reader reader) throws IOException {
+        JsonReader jsonReader = new StreamJsonReader(reader, _bufSize);
+        JsonNode node;
+
+        try {
+            node = fromJson(jsonReader);
+        } catch (RuntimeException e) {
+            IOException readCause = jsonReader.getReadCause();
+
+            if (readCause != null) {
+                throw readCause;
+            }
+
+            throw e;
+        }
+
+        jsonReader.finish();
+
+        return node;
+    }
+
+    public JsonNode fromJson(File file) throws IOException {
+        try (FileReader reader = new FileReader(file)) {
+            return fromJson(reader);
+        }
+    }
+
+    public JsonNode fromJson(Path path) throws IOException {
+        try (Reader reader = Files.newBufferedReader(path)) {
+            return fromJson(reader);
+        }
     }
 
     JsonNode fromJson(JsonReader reader) {
@@ -453,6 +481,18 @@ public final class Json {
             toPrettyJson(node, appendable, 1);
         } else {
             toSimpleJson(node, appendable);
+        }
+    }
+
+    public void toJson(JsonNode node, File file) throws IOException {
+        try (FileWriter writer = new FileWriter(file)) {
+            toJson(node, writer);
+        }
+    }
+
+    public void toJson(JsonNode node, Path path) throws IOException {
+        try (Writer writer = Files.newBufferedWriter(path)) {
+            toJson(node, writer);
         }
     }
 

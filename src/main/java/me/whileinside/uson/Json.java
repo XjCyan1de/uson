@@ -575,6 +575,7 @@ public final class Json {
     public static long parseLong(CharSequence sequence, int start, int end) {
         boolean negate = false;
         long result = 0;
+        long exp = 1;
 
         switch (sequence.charAt(start)) {
             case '-':
@@ -587,6 +588,11 @@ public final class Json {
         for (int i = start; i < end; i++) {
             char c = sequence.charAt(i);
 
+            if (c == 'E' || c == 'e') {
+                exp = (long) Math.pow(10, parseInt(sequence, i + 1, end));
+                break;
+            }
+
             if (c < '0' || c > '9') {
                 continue;
             }
@@ -594,7 +600,7 @@ public final class Json {
             result = result * 10 + (c & 0xF);
         }
 
-        return negate ? -result : result;
+        return (negate ? -result : result) * exp;
     }
 
     public static int parseInt(CharSequence sequence) {
@@ -603,7 +609,9 @@ public final class Json {
 
     public static int parseInt(CharSequence sequence, int start, int end) {
         boolean negate = false;
+
         int result = 0;
+        int exp = 1;
 
         switch (sequence.charAt(start)) {
             case '-':
@@ -616,6 +624,11 @@ public final class Json {
         for (int i = start; i < end; i++) {
             char c = sequence.charAt(i);
 
+            if (c == 'E' || c == 'e') {
+                exp = (int) Math.pow(10, parseInt(sequence, i + 1, end));
+                break;
+            }
+
             if (c < '0' || c > '9') {
                 continue;
             }
@@ -623,7 +636,7 @@ public final class Json {
             result = result * 10 + (c & 0xF);
         }
 
-        return negate ? -result : result;
+        return (negate ? -result : result) * exp;
     }
 
     public static double parseDouble(CharSequence sequence) {
@@ -636,6 +649,7 @@ public final class Json {
         int x = 0;
         int y = 0;
         int yDivision = 1;
+        double exp = 1;
 
         boolean dot = false;
 
@@ -649,6 +663,11 @@ public final class Json {
 
         for (int i = start; i < end; i++) {
             char c = sequence.charAt(i);
+
+            if (c == 'E' || c == 'e') {
+                exp = Math.pow(10, parseInt(sequence, i + 1, end));
+                break;
+            }
 
             if (c == '.') {
                 dot = true;
@@ -669,8 +688,7 @@ public final class Json {
             }
         }
 
-        double result = x + y / (double) yDivision;
-
+        double result = (x * exp) + (y * exp) / yDivision;
         return negate ? -result : result;
     }
 
@@ -684,6 +702,7 @@ public final class Json {
         int x = 0;
         int y = 0;
         int yDivision = 1;
+        float exp = 1;
 
         boolean dot = false;
 
@@ -697,6 +716,11 @@ public final class Json {
 
         for (int i = start; i < end; i++) {
             char c = sequence.charAt(i);
+
+            if (c == 'E' || c == 'e') {
+                exp = (float) Math.pow(10, parseInt(sequence, i + 1, end));
+                break;
+            }
 
             if (c == '.') {
                 dot = true;
@@ -717,9 +741,8 @@ public final class Json {
             }
         }
 
-        float result = x + y / (float) yDivision;
-
-        return negate ? -result : result;
+        float result = (x * exp) + (y * exp) / yDivision;
+        return (negate ? -result : result);
     }
 
     public static String escape(String unescaped) {

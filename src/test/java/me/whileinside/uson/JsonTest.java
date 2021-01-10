@@ -28,6 +28,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JsonTest {
 
     @Test
+    public void testExp() {
+        Json json = Json.defaultInstance();
+        float result = json.fromJson("123.123E-4").asFloat();
+
+        assertEquals(0.0123123f, result);
+    }
+
+    @Test
     public void testToJson() {
         Json json = Json.defaultInstance();
 

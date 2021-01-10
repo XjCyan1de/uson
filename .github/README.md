@@ -1,4 +1,4 @@
-[![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](LICENSE)
+[![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](../LICENSE)
 ![Version](https://img.shields.io/badge/version-1.1.1-blue?style=for-the-badge)
 
 Description
@@ -20,7 +20,7 @@ Json json = Json.defaultInstance();
 // If you know that file contains characters like this
 // you can to uncomment the following line
 // 
-// json.setOptions(Json.AUTO_UNESCAPE);
+// json.addOptions(Json.AUTO_UNESCAPE);
 
 JsonNode node = json.fromJson(new File(filename));
 JsonObject object = node.asObject();
@@ -29,12 +29,13 @@ String message = object.getString("message");
 > Write json
 ```java
 Json json = Json.defaultInstance();
+
 // Enables pretty printing
 //
 // If you need more human-readable output
 // you can to uncomment the following line
 //
-// json.setOptions(Json.PRETTY_PRINTING);
+// json.addOptions(Json.PRETTY_PRINTING);
 
 JsonObject object = new JsonObject();
 object.put("message", "Hello world!");

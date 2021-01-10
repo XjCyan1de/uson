@@ -9,6 +9,35 @@ Build the project
 -----------------
 > gradlew build
 
+Add as dependency
+-----------------
+> Maven
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.unidpers</groupId>
+    <artifactId>uson</artifactId>
+    <version>1.0.0-STABLE</version>
+</dependency>
+```
+> Gradle
+```groovy
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+    implementation 'com.github.unidpers:uson:1.0.0-STABLE'
+}
+```
 Usage
 -----
 > Read json from file

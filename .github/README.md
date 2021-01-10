@@ -1,15 +1,52 @@
-![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)
+[![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](../blob/master/LICENSE)
+![Version](https://img.shields.io/badge/version-1.0.1-blue?style=for-the-badge)
 
 Description
 -----------
 The simple fast json parser on pure java
 
+Build the project
+-----------------
+> gradlew build
+
+Usage
+-----
+> Read json
+```java
+Json json = Json.defaultInstance();
+
+// Automatically replaces \\n to \n, \\u0000 to \u0000 and etc
+//
+// If you know that file contains characters like this
+// you can to uncomment the following line
+// 
+// json.setOptions(Json.AUTO_UNESCAPE);
+
+JsonNode node = json.fromJson(new File(filename));
+JsonObject object = node.asObject();
+String message = object.getString("message");
+```
+> Write json
+```java
+Json json = Json.defaultInstance();
+// Enables pretty printing
+//
+// If you need more human-readable output
+// you can to uncomment the following line
+//
+// json.setOptions(Json.PRETTY_PRINTING);
+
+JsonObject object = new JsonObject();
+object.put("message", "Hello world!");
+
+json.toJson(object, new File(filename));
+```
 
 Contact with author
 -------------------
-1. Email: [Click to mail me](mailto:unidpers@gmail.com)
-2. VK: [Click to go to vk.com](https://vk.com/id623151994)
-3. Telegram: [Click to go to t.me](https://t.me/unidpers)
+ - Email: [Click to mail me](mailto:unidpers@gmail.com)
+ - VK: [Click to go to vk.com](https://vk.com/id623151994)
+ - Telegram: [Click to go to t.me](https://t.me/unidpers)
 
 License
 -------

@@ -30,9 +30,19 @@ public class JsonTest {
     @Test
     public void testExp() {
         Json json = Json.defaultInstance();
-        float result = json.fromJson("123.123E-4").asFloat();
 
-        assertEquals(0.0123123f, result);
+        { // float
+            assertEquals(0.0123123f, json.fromJson("123.123E-4").asFloat());
+        }
+
+        { // double
+            assertEquals(0.0123123, json.fromJson("123.123E-4").asDouble());
+        }
+
+        { // long
+            assertEquals(12L, json.fromJson("123E-1").asLong());
+        }
+
     }
 
     @Test

@@ -23,6 +23,7 @@ import me.whileinside.uson.indent.Indent;
 import me.whileinside.uson.indent.IndentType;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -575,7 +576,6 @@ public final class Json {
     public static long parseLong(CharSequence sequence, int start, int end) {
         boolean negate = false;
         long result = 0;
-        long exp = 1;
 
         switch (sequence.charAt(start)) {
             case '-':
@@ -589,7 +589,8 @@ public final class Json {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                exp = (long) Math.pow(10, parseInt(sequence, i + 1, end));
+                result *= Math.pow(10, parseInt(sequence, i + 1, end));
+
                 break;
             }
 
@@ -600,7 +601,7 @@ public final class Json {
             result = result * 10 + (c & 0xF);
         }
 
-        return (negate ? -result : result) * exp;
+        return negate ? -result : result;
     }
 
     public static int parseInt(CharSequence sequence) {
@@ -609,9 +610,7 @@ public final class Json {
 
     public static int parseInt(CharSequence sequence, int start, int end) {
         boolean negate = false;
-
         int result = 0;
-        int exp = 1;
 
         switch (sequence.charAt(start)) {
             case '-':
@@ -625,7 +624,7 @@ public final class Json {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                exp = (int) Math.pow(10, parseInt(sequence, i + 1, end));
+                result *= Math.pow(10, parseInt(sequence, i + 1, end));
                 break;
             }
 
@@ -636,7 +635,7 @@ public final class Json {
             result = result * 10 + (c & 0xF);
         }
 
-        return (negate ? -result : result) * exp;
+        return negate ? -result : result;
     }
 
     public static double parseDouble(CharSequence sequence) {
@@ -646,12 +645,9 @@ public final class Json {
     public static double parseDouble(CharSequence sequence, int start, int end) {
         boolean negate = false;
 
-        int x = 0;
-        int y = 0;
-        int yDivision = 1;
-        double exp = 1;
-
-        boolean dot = false;
+        double result = 0;
+        double precision = 0;
+        double scale = 1;
 
         switch (sequence.charAt(start)) {
             case '-':
@@ -665,12 +661,29 @@ public final class Json {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                exp = Math.pow(10, parseInt(sequence, i + 1, end));
+                double exp = Math.pow(10, parseInt(sequence, i + 1, end));
+                result *= exp;
+                precision *= exp;
+
                 break;
             }
 
             if (c == '.') {
-                dot = true;
+                for (int j = i + 1; j < end; j++, i++) {
+                    c = sequence.charAt(j);
+
+                    if (c == 'E' || c == 'e') {
+                        break;
+                    }
+
+                    if (c < '0' || c > '9') {
+                        continue;
+                    }
+
+                    precision = precision * 10 + (c & 0xF);
+                    scale *= 10;
+                }
+
                 continue;
             }
 
@@ -678,17 +691,10 @@ public final class Json {
                 continue;
             }
 
-            int v = c & 0xF;
-
-            if (dot) {
-                y = y * 10 + v;
-                yDivision *= 10;
-            } else {
-                x = x * 10 + v;
-            }
+            result = result * 10 + (c & 0xF);
         }
 
-        double result = (x * exp) + (y * exp) / yDivision;
+        result = result + precision / scale;
         return negate ? -result : result;
     }
 
@@ -699,12 +705,9 @@ public final class Json {
     public static float parseFloat(CharSequence sequence, int start, int end) {
         boolean negate = false;
 
-        int x = 0;
-        int y = 0;
-        int yDivision = 1;
-        float exp = 1;
-
-        boolean dot = false;
+        float result = 0;
+        float precision = 0;
+        float scale = 1;
 
         switch (sequence.charAt(start)) {
             case '-':
@@ -718,12 +721,28 @@ public final class Json {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                exp = (float) Math.pow(10, parseInt(sequence, i + 1, end));
+                float exp = (float) Math.pow(10, parseInt(sequence, i + 1, end));
+                result *= exp;
+                precision *= exp;
+
                 break;
             }
 
             if (c == '.') {
-                dot = true;
+                for (int j = i + 1; j < end; j++, i++) {
+                    c = sequence.charAt(j);
+
+                    if (c == 'E' || c == 'e') {
+                        break;
+                    }
+
+                    if (c < '0' || c > '9') {
+                        continue;
+                    }
+
+                    precision = precision * 10 + (c & 0xF);
+                    scale *= 10;
+                }
                 continue;
             }
 
@@ -731,18 +750,11 @@ public final class Json {
                 continue;
             }
 
-            int v = c & 0xF;
-
-            if (dot) {
-                y = y * 10 + v;
-                yDivision *= 10;
-            } else {
-                x = x * 10 + v;
-            }
+            result = result * 10 + (c & 0xF);
         }
 
-        float result = (x * exp) + (y * exp) / yDivision;
-        return (negate ? -result : result);
+        result = result + precision / scale;
+        return negate ? -result : result;
     }
 
     public static String escape(String unescaped) {

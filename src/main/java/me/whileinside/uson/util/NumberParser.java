@@ -101,7 +101,7 @@ public final class NumberParser {
         boolean negate = false;
 
         double result = 0;
-        double precision = 0;
+        double fraction = 0;
         double scale = 1;
 
         switch (sequence.charAt(start)) {
@@ -118,7 +118,7 @@ public final class NumberParser {
             if (c == 'E' || c == 'e') {
                 double exp = Math.pow(10, parseInt(sequence, i + 1, end));
                 result *= exp;
-                precision *= exp;
+                fraction *= exp;
 
                 break;
             }
@@ -135,7 +135,7 @@ public final class NumberParser {
                         throw new NumberFormatException();
                     }
 
-                    precision = precision * 10 + (c & 0xF);
+                    fraction = fraction * 10 + (c & 0xF);
                     scale *= 10;
                 }
 
@@ -149,7 +149,7 @@ public final class NumberParser {
             result = result * 10 + (c & 0xF);
         }
 
-        result = result + precision / scale;
+        result = result + fraction / scale;
         return negate ? -result : result;
     }
 
@@ -161,7 +161,7 @@ public final class NumberParser {
         boolean negate = false;
 
         float result = 0;
-        float precision = 0;
+        float fraction = 0;
         float scale = 1;
 
         switch (sequence.charAt(start)) {
@@ -178,7 +178,7 @@ public final class NumberParser {
             if (c == 'E' || c == 'e') {
                 float exp = (float) Math.pow(10, parseInt(sequence, i + 1, end));
                 result *= exp;
-                precision *= exp;
+                fraction *= exp;
 
                 break;
             }
@@ -195,7 +195,7 @@ public final class NumberParser {
                         throw new NumberFormatException();
                     }
 
-                    precision = precision * 10 + (c & 0xF);
+                    fraction = fraction * 10 + (c & 0xF);
                     scale *= 10;
                 }
                 continue;
@@ -208,7 +208,7 @@ public final class NumberParser {
             result = result * 10 + (c & 0xF);
         }
 
-        result = result + precision / scale;
+        result = result + fraction / scale;
         return negate ? -result : result;
     }
 

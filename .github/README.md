@@ -1,5 +1,5 @@
 [![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](../LICENSE)
-![Version](https://img.shields.io/badge/version-1.1.1-blue?style=for-the-badge)
+![JitPack](https://img.shields.io/jitpack/v/github/unidpers/uson?style=for-the-badge)
 
 Description
 -----------
@@ -11,7 +11,7 @@ Build the project
 
 Usage
 -----
-> Read json
+> Read json from file
 ```java
 Json json = Json.defaultInstance();
 
@@ -26,7 +26,7 @@ JsonNode node = json.fromJson(new File(filename));
 JsonObject object = node.asObject();
 String message = object.getString("message");
 ```
-> Write json
+> Write json to file
 ```java
 Json json = Json.defaultInstance();
 
@@ -45,9 +45,9 @@ json.toJson(object, new File(filename));
 
 Contact with author
 -------------------
- - Email: [Click to mail me](mailto:unidpers@gmail.com)
  - VK: [Click to go to vk.com](https://vk.com/id623151994)
  - Telegram: [Click to go to t.me](https://t.me/unidpers)
+ - Email: [Click to mail me](mailto:unidpers@gmail.com)
 
 License
 -------

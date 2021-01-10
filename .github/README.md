@@ -1,5 +1,5 @@
 [![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](../LICENSE)
-![JitPack](https://img.shields.io/jitpack/v/github/unidpers/uson?style=for-the-badge)
+[![JitPack](https://img.shields.io/jitpack/v/github/unidpers/uson?style=for-the-badge)](https://jitpack.io/#unidpers/uson)
 
 Description
 -----------

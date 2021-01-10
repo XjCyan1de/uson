@@ -1,5 +1,5 @@
-[![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](../blob/master/LICENSE)
-![Version](https://img.shields.io/badge/version-1.1.0-blue?style=for-the-badge)
+[![GitHub](https://img.shields.io/github/license/unidpers/uson?style=for-the-badge)](LICENSE)
+![Version](https://img.shields.io/badge/version-1.1.1-blue?style=for-the-badge)
 
 Description
 -----------

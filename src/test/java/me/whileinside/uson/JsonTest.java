@@ -31,12 +31,14 @@ public class JsonTest {
     @Test
     public void testStream() throws IOException {
         Json json = Json.defaultInstance();
+        json.addOptions(Json.AUTO_UNESCAPE);
+
         String jsonValue = "{\"message\": {\"en\": \"Hello world!\", \"ru\": \"\\u041F\\u0440\\u0438\\u0432\\u0435\\u0442 \\u043C\\u0438\\u0440!\"}}";
 
         JsonNode node = json.fromJson(new StringReader(jsonValue));
         assertTrue(node.isObject());
         assertEquals("Hello world!", node.asObject().getObject("message").getString("en"));
-        assertEquals("Привет мир!", node.asObject().getObject("message").getUnescapedString("ru"));
+        assertEquals("Привет мир!", node.asObject().getObject("message").getString("ru"));
     }
 
     @Test

@@ -222,7 +222,7 @@ public final class Json {
             }
         }
 
-        return new JsonValue(this, reader, pos, reader.getPosition(), false);
+        return new JsonValue(reader, pos, reader.getPosition(), false, _options);
     }
 
     JsonObject parseObject(JsonReader reader) {
@@ -325,7 +325,7 @@ public final class Json {
                 if (value == '\\') {
                     escape = true;
                 } else if (value == '\"') {
-                    return new JsonValue(this, reader, pos, reader.getPosition() - 1, true);
+                    return new JsonValue(reader, pos, reader.getPosition() - 1, true, _options);
                 }
             }
         }

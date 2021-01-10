@@ -27,7 +27,6 @@ import java.math.BigDecimal;
  */
 public class JsonValue extends JsonNode {
 
-    private Json json;
     private final ValueBackend backend;
     private final boolean string;
 
@@ -36,10 +35,8 @@ public class JsonValue extends JsonNode {
         this.string = string;
     }
 
-    JsonValue(Json json, JsonReader reader, int begin, int end, boolean string) {
-        this(new BufferBackend(reader, begin, end, json.isCacheBufferedValues()), string);
-
-        this.json = json;
+    JsonValue(JsonReader reader, int begin, int end, boolean string, int options) {
+        this(new BufferBackend(reader, begin, end, options), string);
     }
 
     public JsonValue(boolean value) {
@@ -76,7 +73,7 @@ public class JsonValue extends JsonNode {
 
     @Override
     public @NotNull String asString() {
-        return json == null || json.isAutoUnescape() ? asUnescapedString() : asEscapedString();
+        return backend.getString();
     }
 
     @Override

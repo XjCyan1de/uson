@@ -37,7 +37,7 @@ public final class LongBackend implements ValueBackend {
     }
 
     @Override
-    public String getString(boolean escaped) {
+    public String getString() {
         return getEscapedString();
     }
 

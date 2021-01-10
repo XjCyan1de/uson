@@ -27,7 +27,6 @@ public final class StringBackend implements ValueBackend {
 
     public StringBackend(String value) {
         this.value = value;
-        this.escaped = Json.escape(value);
     }
 
     @Override
@@ -45,8 +44,8 @@ public final class StringBackend implements ValueBackend {
     }
 
     @Override
-    public String getString(boolean escaped) {
-        return escaped ? getEscapedString() : value;
+    public String getString() {
+        return value;
     }
 
     @Override

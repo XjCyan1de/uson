@@ -25,7 +25,7 @@ public interface ValueBackend {
 
     CharSequence getRaw();
 
-    String getString(boolean escaped);
+    String getString();
 
     String getUnescapedString();
     String getEscapedString();

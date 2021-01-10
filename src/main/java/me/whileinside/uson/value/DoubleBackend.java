@@ -37,7 +37,7 @@ public final class DoubleBackend implements ValueBackend {
     }
 
     @Override
-    public String getString(boolean escaped) {
+    public String getString() {
         return getEscapedString();
     }
 

@@ -30,17 +30,20 @@ public final class BufferBackend implements ValueBackend {
     private final JsonReader reader;
     private final int begin, end;
 
+    private final boolean preferEscaped;
     private Lazy<String> unescaped, escaped;
 
-    public BufferBackend(JsonReader reader, int begin, int end, boolean cache) {
+    public BufferBackend(JsonReader reader, int begin, int end, int options) {
         this.reader = reader;
         this.begin = begin;
         this.end = end;
 
-        if (cache) {
+        if ((options & Json.CACHE_BUFFERED_VALUES) != 0) {
             this.unescaped = Lazy.of(this::_getUnescapedString);
             this.escaped = Lazy.of(this::_getEscapedString);
         }
+
+        preferEscaped = (options & Json.AUTO_UNESCAPE) == 0;
     }
 
     private String _getUnescapedString() {
@@ -57,8 +60,8 @@ public final class BufferBackend implements ValueBackend {
     }
 
     @Override
-    public String getString(boolean escaped) {
-        return escaped ? getEscapedString() : getUnescapedString();
+    public String getString() {
+        return preferEscaped ? getEscapedString() : getUnescapedString();
     }
 
     @Override

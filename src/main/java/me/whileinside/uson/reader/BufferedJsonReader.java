@@ -16,80 +16,66 @@
 
 package me.whileinside.uson.reader;
 
-import me.whileinside.uson.Json;
 import me.whileinside.uson.util.CharArraySequence;
+import me.whileinside.uson.util.NumberParser;
 
 import java.io.IOException;
 
 /**
  * @author Unidentified Person
  */
-public class BufferedJsonReader implements JsonReader {
+final class BufferedJsonReader implements JsonReader {
 
-    private final char[] buf;
-    private int pos;
+    private final char[] _buffer;
+    private int _pos;
 
-    public BufferedJsonReader(char[] buf) {
-        this.buf = buf;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-
-    @Override
-    public void finish() {
+    public BufferedJsonReader(char[] buffer) {
+        _buffer = buffer;
     }
 
     @Override
     public int getPosition() {
-        return pos;
+        return _pos;
     }
 
     @Override
     public int read() {
-        return pos == buf.length ? -1 : buf[pos++];
+        return _pos == _buffer.length ? -1 : _buffer[_pos++];
     }
 
     @Override
     public void rollback() {
-        pos--;
+        _pos--;
     }
 
     @Override
     public char[] getBuffer() {
-        return buf;
+        return _buffer;
     }
 
     @Override
     public CharSequence getChars(int start, int end) {
-        return new CharArraySequence(buf, start, end - start);
+        return new CharArraySequence(_buffer, start, end - start);
     }
 
     @Override
     public int getInt(int start, int end) {
-        return Json.parseInt(new CharArraySequence(buf), start, end);
+        return NumberParser.parseInt(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public long getLong(int start, int end) {
-        return Json.parseLong(new CharArraySequence(buf), start, end);
+        return NumberParser.parseLong(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public float getFloat(int start, int end) {
-        return Json.parseFloat(new CharArraySequence(buf), start, end);
+        return NumberParser.parseFloat(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public double getDouble(int start, int end) {
-        return Json.parseDouble(new CharArraySequence(buf), start, end);
-    }
-
-    @Override
-    public char getChar(int idx) {
-        return buf[idx];
+        return NumberParser.parseDouble(new CharArraySequence(_buffer), start, end);
     }
 
     @Override

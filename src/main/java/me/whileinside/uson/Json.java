@@ -16,14 +16,11 @@
 
 package me.whileinside.uson;
 
-import me.whileinside.uson.reader.BufferedJsonReader;
-import me.whileinside.uson.reader.JsonReader;
-import me.whileinside.uson.reader.StreamJsonReader;
 import me.whileinside.uson.indent.Indent;
 import me.whileinside.uson.indent.IndentType;
+import me.whileinside.uson.reader.JsonReader;
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -48,47 +45,51 @@ public final class Json {
     private IndentType _indentType = IndentType.ONE_TAB;
     private Indent[] _indentCache = new Indent[4];
 
-    private int _bufSize;
-    private int _options;
-
-    public static Json defaultInstance() {
-        return defaultInstance;
-    }
-
-    private static boolean shouldSkip(int value) {
-        return value == ' ' || value == '\r' || value == '\n' || value == '\t';
-    }
+    private int _bufferLength = 1024;
+    private int _options = 0;
 
     public boolean isAutoUnescape() {
-        return (_options & AUTO_UNESCAPE) != 0;
+        return hasOptions(AUTO_UNESCAPE);
     }
 
-    public boolean isCacheBufferValues() {
-        return (_options & CACHE_BUFFERED_VALUES) != 0;
+    public boolean isCacheBufferedValues() {
+        return hasOptions(CACHE_BUFFERED_VALUES);
     }
 
     public boolean isPrettyPrinting() {
-        return (_options & PRETTY_PRINTING) != 0;
+        return hasOptions(PRETTY_PRINTING);
     }
 
     public void setOptions(int options) {
-        _options =  options;
+        _options = options;
     }
 
-    public void setIndentType(IndentType type) {
-        _indentType = type;
+    public void addOptions(int options) {
+        _options |= options;
     }
 
-    public void setBufferLength(int len) {
-        _bufSize = len;
+    public void removeOptions(int options) {
+        _options &= ~options;
+    }
+
+    public boolean hasOptions(int options) {
+        return (_options & options) == options;
+    }
+
+    public void setIndentType(IndentType indentType) {
+        _indentType = indentType;
+    }
+
+    public void setBufferLength(int bufferLength) {
+        _bufferLength = bufferLength;
     }
 
     public JsonNode fromJson(String json) {
-        return fromJson(new BufferedJsonReader(json.toCharArray()));
+        return fromJson(JsonReader.ofBuffer(json.toCharArray()));
     }
 
     public JsonNode fromJson(char[] json) {
-        return fromJson(new BufferedJsonReader(json));
+        return fromJson(JsonReader.ofBuffer(json));
     }
 
     public JsonNode fromJson(InputStream is) throws IOException {
@@ -96,7 +97,7 @@ public final class Json {
     }
 
     public JsonNode fromJson(Reader reader) throws IOException {
-        JsonReader jsonReader = new StreamJsonReader(reader, _bufSize);
+        JsonReader jsonReader = JsonReader.ofStream(reader, _bufferLength);
         JsonNode node;
 
         try {
@@ -110,8 +111,6 @@ public final class Json {
 
             throw e;
         }
-
-        jsonReader.finish();
 
         return node;
     }
@@ -532,11 +531,20 @@ public final class Json {
         return indent;
     }
 
-    public static int parseUTF16(CharSequence sequence) {
+
+    public static Json defaultInstance() {
+        return defaultInstance;
+    }
+
+    static boolean shouldSkip(int value) {
+        return value == ' ' || value == '\r' || value == '\n' || value == '\t';
+    }
+
+    static int parseUTF16(CharSequence sequence) {
         return parseUTF16(sequence, 0, sequence.length());
     }
 
-    public static int parseUTF16(CharSequence sequence, int start, int end) {
+    static int parseUTF16(CharSequence sequence, int start, int end) {
         int result = 0;
 
         for (int i = start; i < end; i++) {
@@ -554,7 +562,7 @@ public final class Json {
         return result;
     }
 
-    public static char[] toUTF16(int value) {
+    static char[] toUTF16(int value) {
         char[] result = new char[4];
 
         for (int i = 3; i >= 0; i--) {
@@ -567,194 +575,6 @@ public final class Json {
         }
 
         return result;
-    }
-
-    public static long parseLong(CharSequence sequence) {
-        return parseLong(sequence, 0, sequence.length());
-    }
-
-    public static long parseLong(CharSequence sequence, int start, int end) {
-        boolean negate = false;
-        long result = 0;
-
-        switch (sequence.charAt(start)) {
-            case '-':
-                negate = true;
-            case '+':
-                start++;
-                break;
-        }
-
-        for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
-
-            if (c == 'E' || c == 'e') {
-                result *= Math.pow(10, parseInt(sequence, i + 1, end));
-
-                break;
-            }
-
-            if (c < '0' || c > '9') {
-                continue;
-            }
-
-            result = result * 10 + (c & 0xF);
-        }
-
-        return negate ? -result : result;
-    }
-
-    public static int parseInt(CharSequence sequence) {
-        return parseInt(sequence, 0, sequence.length());
-    }
-
-    public static int parseInt(CharSequence sequence, int start, int end) {
-        boolean negate = false;
-        int result = 0;
-
-        switch (sequence.charAt(start)) {
-            case '-':
-                negate = true;
-            case '+':
-                start++;
-                break;
-        }
-
-        for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
-
-            if (c == 'E' || c == 'e') {
-                result *= Math.pow(10, parseInt(sequence, i + 1, end));
-                break;
-            }
-
-            if (c < '0' || c > '9') {
-                continue;
-            }
-
-            result = result * 10 + (c & 0xF);
-        }
-
-        return negate ? -result : result;
-    }
-
-    public static double parseDouble(CharSequence sequence) {
-        return parseDouble(sequence, 0, sequence.length());
-    }
-
-    public static double parseDouble(CharSequence sequence, int start, int end) {
-        boolean negate = false;
-
-        double result = 0;
-        double precision = 0;
-        double scale = 1;
-
-        switch (sequence.charAt(start)) {
-            case '-':
-                negate = true;
-            case '+':
-                start++;
-                break;
-        }
-
-        for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
-
-            if (c == 'E' || c == 'e') {
-                double exp = Math.pow(10, parseInt(sequence, i + 1, end));
-                result *= exp;
-                precision *= exp;
-
-                break;
-            }
-
-            if (c == '.') {
-                for (int j = i + 1; j < end; j++, i++) {
-                    c = sequence.charAt(j);
-
-                    if (c == 'E' || c == 'e') {
-                        break;
-                    }
-
-                    if (c < '0' || c > '9') {
-                        continue;
-                    }
-
-                    precision = precision * 10 + (c & 0xF);
-                    scale *= 10;
-                }
-
-                continue;
-            }
-
-            if (c < '0' || c > '9') {
-                continue;
-            }
-
-            result = result * 10 + (c & 0xF);
-        }
-
-        result = result + precision / scale;
-        return negate ? -result : result;
-    }
-
-    public static float parseFloat(CharSequence sequence) {
-        return parseFloat(sequence, 0, sequence.length());
-    }
-
-    public static float parseFloat(CharSequence sequence, int start, int end) {
-        boolean negate = false;
-
-        float result = 0;
-        float precision = 0;
-        float scale = 1;
-
-        switch (sequence.charAt(start)) {
-            case '-':
-                negate = true;
-            case '+':
-                start++;
-                break;
-        }
-
-        for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
-
-            if (c == 'E' || c == 'e') {
-                float exp = (float) Math.pow(10, parseInt(sequence, i + 1, end));
-                result *= exp;
-                precision *= exp;
-
-                break;
-            }
-
-            if (c == '.') {
-                for (int j = i + 1; j < end; j++, i++) {
-                    c = sequence.charAt(j);
-
-                    if (c == 'E' || c == 'e') {
-                        break;
-                    }
-
-                    if (c < '0' || c > '9') {
-                        continue;
-                    }
-
-                    precision = precision * 10 + (c & 0xF);
-                    scale *= 10;
-                }
-                continue;
-            }
-
-            if (c < '0' || c > '9') {
-                continue;
-            }
-
-            result = result * 10 + (c & 0xF);
-        }
-
-        result = result + precision / scale;
-        return negate ? -result : result;
     }
 
     public static String escape(String unescaped) {

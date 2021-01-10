@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Unidentified Person
  */
-public class CharArraySequence implements CharSequence {
+public final class CharArraySequence implements CharSequence {
 
     private final char[] chars;
     private final int off, len;

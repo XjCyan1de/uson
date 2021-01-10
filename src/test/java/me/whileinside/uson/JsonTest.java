@@ -18,6 +18,7 @@ package me.whileinside.uson;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +27,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Unidentified Person
  */
 public class JsonTest {
+
+    @Test
+    public void testStream() throws IOException {
+        Json json = Json.defaultInstance();
+        String jsonValue = "{\"message\": {\"en\": \"Hello world!\", \"ru\": \"\\u041F\\u0440\\u0438\\u0432\\u0435\\u0442 \\u043C\\u0438\\u0440!\"}}";
+
+        JsonNode node = json.fromJson(new StringReader(jsonValue));
+        assertTrue(node.isObject());
+        assertEquals("Hello world!", node.asObject().getObject("message").getString("en"));
+        assertEquals("Привет мир!", node.asObject().getObject("message").getUnescapedString("ru"));
+    }
 
     @Test
     public void testExp() {

@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'me.whileinside'
-version '1.0.3-SNAPSHOT'
+version '1.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()

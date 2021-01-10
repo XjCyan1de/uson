@@ -17,14 +17,12 @@
 package me.whileinside.uson.reader;
 
 import java.io.IOException;
+import java.io.Reader;
 
 /**
  * @author Unidentified Person
  */
 public interface JsonReader {
-
-    boolean isFinished();
-    void finish();
 
     int getPosition();
 
@@ -38,8 +36,14 @@ public interface JsonReader {
     long getLong(int start, int end);
     float getFloat(int start, int end);
     double getDouble(int start, int end);
-    char getChar(int idx);
 
     IOException getReadCause();
 
+    static JsonReader ofStream(Reader reader, int bufferLength) {
+        return new StreamJsonReader(reader, bufferLength);
+    }
+
+    static JsonReader ofBuffer(char[] buffer) {
+        return new BufferedJsonReader(buffer);
+    }
 }

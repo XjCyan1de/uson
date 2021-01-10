@@ -16,8 +16,8 @@
 
 package me.whileinside.uson.reader;
 
-import me.whileinside.uson.Json;
 import me.whileinside.uson.util.CharArraySequence;
+import me.whileinside.uson.util.NumberParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -26,109 +26,92 @@ import java.util.Arrays;
 /**
  * @author Unidentified Person
  */
-public class StreamJsonReader implements JsonReader {
+final class StreamJsonReader implements JsonReader {
 
-    private final Reader reader;
-    private final int bufLen;
+    private final Reader _reader;
+    private final int _bufferLength;
 
-    private char[] buf;
-    private boolean finished;
+    private char[] _buffer;
 
-    private int pos;
-    private int read;
+    private int _pos;
+    private int _read;
 
-    private IOException readCause;
+    private IOException _readCause;
 
-    public StreamJsonReader(Reader reader, int bufLen) {
-        this.reader = reader;
-        this.buf = new char[bufLen];
-        this.bufLen = bufLen;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return finished;
-    }
-
-    @Override
-    public void finish() {
-        finished = true;
+    public StreamJsonReader(Reader reader, int bufferLength) {
+        _reader = reader;
+        _buffer = new char[_bufferLength = bufferLength];
     }
 
     @Override
     public int getPosition() {
-        return pos;
+        return _pos;
     }
 
     @Override
     public int read() {
-        if (read == pos) {
+        if (_read == _pos) {
             try {
-                int value = reader.read();
+                int value = _reader.read();
 
                 if (value != -1) {
-                    if (pos == buf.length) {
-                        buf = Arrays.copyOf(buf, buf.length + bufLen);
+                    if (_pos == _buffer.length) {
+                        _buffer = Arrays.copyOf(_buffer, _buffer.length + _bufferLength);
                     }
 
-                    buf[pos] = (char) value;
-                    pos++;
-                    read++;
+                    _buffer[_pos] = (char) value;
+                    _pos++;
+                    _read++;
                 }
 
                 return value;
             } catch (IOException e) {
-                readCause = e;
+                _readCause = e;
 
                 throw new RuntimeException();
             }
         } else {
-            return buf[pos++];
+            return _buffer[_pos++];
         }
     }
 
     @Override
     public void rollback() {
-        pos--;
+        _pos--;
     }
 
     @Override
     public char[] getBuffer() {
-        return buf;
+        return _buffer;
     }
 
     @Override
     public CharSequence getChars(int start, int end) {
-        return new CharArraySequence(buf, start, end - start);
+        return new CharArraySequence(_buffer, start, end - start);
     }
 
     @Override
     public int getInt(int start, int end) {
-        return Json.parseInt(new CharArraySequence(buf), start, end);
+        return NumberParser.parseInt(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public long getLong(int start, int end) {
-        return Json.parseLong(new CharArraySequence(buf), start, end);
+        return NumberParser.parseLong(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public float getFloat(int start, int end) {
-        return Json.parseFloat(new CharArraySequence(buf), start, end);
+        return NumberParser.parseFloat(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public double getDouble(int start, int end) {
-        return Json.parseDouble(new CharArraySequence(buf), start, end);
-    }
-
-    @Override
-    public char getChar(int idx) {
-        return buf[idx];
+        return NumberParser.parseDouble(new CharArraySequence(_buffer), start, end);
     }
 
     @Override
     public IOException getReadCause() {
-        return readCause;
+        return _readCause;
     }
 }

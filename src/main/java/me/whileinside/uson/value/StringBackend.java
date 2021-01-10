@@ -86,7 +86,7 @@ public final class StringBackend implements ValueBackend {
 
     @Override
     public boolean getBoolean() {
-        return value.equals("true");
+        return false;
     }
 
     @Override

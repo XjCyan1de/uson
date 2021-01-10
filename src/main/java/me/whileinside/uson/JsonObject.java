@@ -241,16 +241,16 @@ public class JsonObject extends JsonNode {
 
     @Nullable
     public String getUnescapedString(@NotNull String name) {
-        return getEscapedString(name, null);
+        return getUnescapedString(name, null);
     }
 
     @Nullable
-    public Object getObject(String name) {
+    public JsonObject getObject(String name) {
         return getOptObject(name).orElse(null);
     }
 
     @NotNull
-    public Optional<Object> getOptObject(String name) {
+    public Optional<JsonObject> getOptObject(String name) {
         JsonNode node = getNode(name);
 
         return node == null ? Optional.empty() : Optional.of(node.asObject());

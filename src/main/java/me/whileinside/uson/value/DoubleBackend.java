@@ -78,7 +78,7 @@ public final class DoubleBackend implements ValueBackend {
 
     @Override
     public boolean getBoolean() {
-        return value == 1;
+        return false;
     }
 
     @Override

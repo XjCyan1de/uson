@@ -78,7 +78,7 @@ public final class LongBackend implements ValueBackend {
 
     @Override
     public boolean getBoolean() {
-        return value == 1;
+        return false;
     }
 
     @Override

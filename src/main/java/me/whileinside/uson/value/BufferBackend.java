@@ -17,15 +17,15 @@
 package me.whileinside.uson.value;
 
 import me.whileinside.uson.Json;
-import me.whileinside.uson.cache.Lazy;
 import me.whileinside.uson.reader.JsonReader;
+import me.whileinside.uson.util.Lazy;
 
 import java.math.BigDecimal;
 
 /**
  * @author Unidentified Person
  */
-public class BufferBackend implements ValueBackend {
+public final class BufferBackend implements ValueBackend {
 
     private final JsonReader reader;
     private final int begin, end;
@@ -53,10 +53,6 @@ public class BufferBackend implements ValueBackend {
 
     @Override
     public CharSequence getRaw() {
-        if (!reader.isFinished()) {
-            throw new RuntimeException();
-        }
-
         return reader.getChars(begin, end);
     }
 
@@ -87,50 +83,31 @@ public class BufferBackend implements ValueBackend {
 
     @Override
     public int getInt() {
-        return Json.parseInt(getRaw());
+        return reader.getInt(begin, end);
     }
 
     @Override
     public long getLong() {
-        return Json.parseLong(getRaw());
+        return reader.getLong(begin, end);
     }
 
     @Override
     public double getDouble() {
-        return Json.parseDouble(getRaw());
+        return reader.getDouble(begin, end);
     }
 
     @Override
     public float getFloat() {
-        return Json.parseFloat(getRaw());
+        return reader.getFloat(begin, end);
     }
 
     @Override
     public boolean getBoolean() {
-        if (!reader.isFinished()) {
-            throw new RuntimeException();
-        }
-
-        int len = end - begin;
-
-        if (len == 1) {
-            return reader.getChar(begin) == '1';
-        } else if (len == 4) {
-            return reader.getChar(begin) == 't'
-                    && reader.getChar(begin + 1) == 'r'
-                    && reader.getChar(begin + 2) == 'u'
-                    && reader.getChar(begin + 3) == 'e';
-        } else {
-            return false;
-        }
+        return false;
     }
 
     @Override
     public BigDecimal getBigDecimal() {
-        if (!reader.isFinished()) {
-            throw new RuntimeException();
-        }
-
         return new BigDecimal(reader.getBuffer(), begin, end - begin);
     }
 }

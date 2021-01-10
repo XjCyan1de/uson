@@ -14,19 +14,19 @@
  *    limitations under the License.
  */
 
-package me.whileinside.uson.cache;
+package me.whileinside.uson.util;
 
 import java.util.function.Supplier;
 
 /**
  * @author Unidentified Person
  */
-public class Lazy<I> implements Supplier<I> {
+public final class Lazy<I> implements Supplier<I> {
 
     private final Supplier<I> supplier;
     private I value;
 
-    public Lazy(Supplier<I> supplier) {
+    private Lazy(Supplier<I> supplier) {
         this.supplier = supplier;
     }
 

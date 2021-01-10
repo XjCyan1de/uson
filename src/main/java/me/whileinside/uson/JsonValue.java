@@ -20,7 +20,6 @@ import me.whileinside.uson.reader.JsonReader;
 import me.whileinside.uson.value.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -38,7 +37,7 @@ public class JsonValue extends JsonNode {
     }
 
     JsonValue(Json json, JsonReader reader, int begin, int end, boolean string) {
-        this(new BufferBackend(reader, begin, end, json.isCacheBufferValues()), string);
+        this(new BufferBackend(reader, begin, end, json.isCacheBufferedValues()), string);
 
         this.json = json;
     }

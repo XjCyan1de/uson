@@ -17,6 +17,7 @@
 package me.whileinside.uson;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Unidentified Person
@@ -32,6 +33,21 @@ public class JsonNull extends JsonNode {
     @Override
     public boolean isNull() {
         return true;
+    }
+
+    @Override
+    public @NotNull CharSequence asRaw() {
+        return asString();
+    }
+
+    @Override
+    public @NotNull String asString() {
+        return "null";
+    }
+
+    @Override
+    public @NotNull String asEscapedString() {
+        return asString();
     }
 
     @Override

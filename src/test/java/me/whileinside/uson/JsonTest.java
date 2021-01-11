@@ -16,15 +16,15 @@
 
 package me.whileinside.uson;
 
+import me.whileinside.uson.indent.IndentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static me.whileinside.uson.Json.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-// todo option test
-// todo stream test
 /**
  * @author Unidentified Person
  */
@@ -34,7 +34,76 @@ public class JsonTest {
 
     @BeforeEach
     void init() {
-        json = Json.defaultInstance();
+        json = new Json();
+        json.setOptions(NO_OPTIONS);
+    }
+
+    @Test
+    void testPrettyPrintingValues() {
+        JsonObject object = new JsonObject();
+        object.putEmptyArray("empty_array");
+        object.putEmptyObject("empty_object");
+
+        object.put("user", new JsonObject()
+                .put("first_name", "Unidentified")
+                .put("last_name", "Person")
+                .put("age", 20));
+
+        assertEquals("{\"empty_array\":[],\"empty_object\":{},\"user\":{\"first_name\":\"Unidentified\",\"last_name\":\"Person\",\"age\":20}}",
+                json.toJson(object));
+
+        json.addOptions(PRETTY_PRINTING);
+
+        assertEquals("{\n" +
+                "\t\"empty_array\": [ ],\n" +
+                "\t\"empty_object\": { },\n" +
+                "\t\"user\": {\n" +
+                "\t\t\"first_name\": \"Unidentified\",\n" +
+                "\t\t\"last_name\": \"Person\",\n" +
+                "\t\t\"age\": 20\n" +
+                "\t}\n" +
+                "}", json.toJson(object));
+
+        json.setIndentType(IndentType.ONE_SPACE);
+
+        assertEquals("{\n" +
+                " \"empty_array\": [ ],\n" +
+                " \"empty_object\": { },\n" +
+                " \"user\": {\n" +
+                "  \"first_name\": \"Unidentified\",\n" +
+                "  \"last_name\": \"Person\",\n" +
+                "  \"age\": 20\n" +
+                " }\n" +
+                "}", json.toJson(object));
+    }
+
+    @Test
+    void testCheckRawValuesOnlyValues() {
+        JsonNode node = json.fromJson("\"Hello\\u0020world!\"");
+        assertEquals(new JsonValue("Hello world!"), node);
+
+        json.addOptions(CHECK_RAW_VALUES_ONLY);
+
+        node = json.fromJson("\"Hello\\u0020world!\"");
+        assertNotEquals(new JsonValue("Hello world!"), node);
+    }
+
+    @Test
+    void testCacheBufferedValues() {
+        JsonNode node = json.fromJson("\"Hello world!\"");
+        assertNotSame(node.asString(), node.asString());
+
+        json.addOptions(CACHE_BUFFERED_VALUES);
+
+        node = json.fromJson("\"Hello world!\"");
+        assertSame(node.asString(), node.asString());
+    }
+
+    @Test
+    void testAutoEscape() {
+        assertEquals("Hello\\u0020\\tworld!", json.fromJson("\"Hello\\u0020\\tworld!\"").asString());
+        json.addOptions(AUTO_UNESCAPE);
+        assertEquals("Hello \tworld!", json.fromJson("\"Hello\\u0020\\tworld!\"").asString());
     }
 
     @Test

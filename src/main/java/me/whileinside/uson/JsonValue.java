@@ -155,7 +155,7 @@ public class JsonValue extends JsonNode {
 
     @Override
     public String toString() {
-        return "Value[" + (string ? "\"" + asString() + "\"" : asString()) + "]";
+        return "Value[" + (string ? "\"" + asUnescapedString() + "\"" : asUnescapedString()) + "]";
     }
 
     @Override

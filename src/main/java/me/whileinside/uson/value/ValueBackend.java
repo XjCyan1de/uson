@@ -29,6 +29,10 @@ public abstract class ValueBackend {
 
     public abstract String getString();
 
+    protected boolean checkRawValues() {
+        return false;
+    }
+
     public String getUnescapedString() {
         return getString();
     }
@@ -52,6 +56,9 @@ public abstract class ValueBackend {
         if (!(obj instanceof ValueBackend)) return false;
 
         ValueBackend that = (ValueBackend) obj;
-        return getRaw().equals(that.getRaw());
+
+        return checkRawValues() || that.checkRawValues()
+                ? getRaw().equals(that.getRaw())
+                : getUnescapedString().equals(that.getUnescapedString());
     }
 }

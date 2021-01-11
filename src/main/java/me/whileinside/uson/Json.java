@@ -32,17 +32,36 @@ public final class Json {
 
     private static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
-    private static final char[] TRUE = "true".toCharArray(),
-            FALSE = "false".toCharArray(),
-            NULL = "null".toCharArray();
+    private static final Keyword[] KEYWORDS = new Keyword[]
+            {
+                    new Keyword(JsonBoolean.TRUE),
+                    new Keyword(JsonBoolean.FALSE),
+                    new Keyword(JsonNull.INSTANCE)
+            };
 
-    /* Json options */
-    public static final int PRETTY_PRINTING         = 1;
-    public static final int CACHE_BUFFERED_VALUES   = 1 << 1;
-    public static final int AUTO_UNESCAPE           = 1 << 2;
-    public static final int CHECK_RAW_VALUES_ONLY   = 1 << 3;
+    private static class Keyword {
+        private final JsonNode node;
+        private final char[] buffer;
 
-    public static final int DEFAULTS = CACHE_BUFFERED_VALUES | CHECK_RAW_VALUES_ONLY;
+        public Keyword(JsonNode node) {
+            this.node = node;
+            this.buffer = node.asString().toCharArray();
+        }
+
+        public boolean startsWith(char value) {
+            return buffer[0] == value;
+        }
+
+    }
+
+    /* ============================= Json Options =================================== */
+    public static final int PRETTY_PRINTING         = 1;                              //
+    public static final int CACHE_BUFFERED_VALUES   = 1 << 1;                         //
+    public static final int AUTO_UNESCAPE           = 1 << 2;                         //
+    public static final int CHECK_RAW_VALUES_ONLY   = 1 << 3;                         //
+    public static final int DEFAULTS = CACHE_BUFFERED_VALUES | CHECK_RAW_VALUES_ONLY; //
+    public static final int NO_OPTIONS = 0;                                           //
+    /* ============================================================================== */
 
     private static final Json defaultInstance = new Json();
 
@@ -80,6 +99,10 @@ public final class Json {
         _options &= ~options;
     }
 
+    public void clearOptions() {
+        _options = NO_OPTIONS;
+    }
+
     public boolean hasOptions(int options) {
         return (_options & options) == options;
     }
@@ -93,11 +116,11 @@ public final class Json {
     }
 
     public JsonNode fromJson(String json) {
-        return fromJson(JsonReader.ofBuffer(json));
+        return fromJson(new JsonReader(json));
     }
 
     public JsonNode fromJson(char[] json) {
-        return fromJson(JsonReader.ofBuffer(json));
+        return fromJson(new JsonReader(json));
     }
 
     public JsonNode fromJson(InputStream is) throws IOException {
@@ -105,7 +128,7 @@ public final class Json {
     }
 
     public JsonNode fromJson(Reader reader) throws IOException {
-        JsonReader jsonReader = JsonReader.ofStream(reader, _bufferLength);
+        JsonReader jsonReader = new JsonReader(reader, _bufferLength);
         JsonNode node;
 
         try {
@@ -171,28 +194,24 @@ public final class Json {
     }
 
     JsonNode parseKeyword(JsonReader reader) {
-        int type = 0;
-        char[] buf = null;
+        Keyword keyword = null;
 
         int idx = 0;
         int value;
 
         while ((value = reader.read()) != -1) {
             if (idx == 0) {
-                switch (value) {
-                    case 't':
-                        type = 0;
-                        buf = TRUE;
+                char ch = (char) value;
+
+                for (Keyword el : KEYWORDS) {
+                    if (el.startsWith(ch)) {
+                        keyword = el;
+                        idx++;
                         break;
-                    case 'f':
-                        type = 1;
-                        buf = FALSE;
-                        break;
-                    case 'n':
-                        type = 2;
-                        buf = NULL;
-                        break;
+                    }
                 }
+
+                continue;
             }
 
             if (value == ']' || value == '}' || value == ',' || value == ':' || shouldSkip(value)) {
@@ -200,23 +219,15 @@ public final class Json {
                 break;
             }
 
-            if (buf == null || idx == buf.length || buf[idx] != value) {
+            if (idx == keyword.buffer.length || keyword.buffer[idx] != value) {
                 throw new IllegalStateException("Unexpected symbol: " + (char) value);
             }
 
             idx++;
         }
 
-        switch (type) {
-            case 0:
-                return JsonBoolean.TRUE;
-            case 1:
-                return JsonBoolean.FALSE;
-            case 2:
-                return JsonNull.INSTANCE;
-            default:
-                throw new RuntimeException();
-        }
+        assert keyword != null;
+        return keyword.node;
     }
 
     JsonValue parseNumber(JsonReader reader) {

@@ -25,15 +25,11 @@ public final class NumberParser {
         throw new UnsupportedOperationException();
     }
 
-    public static long parseLong(CharSequence sequence) {
-        return parseLong(sequence, 0, sequence.length());
-    }
-
-    public static long parseLong(CharSequence sequence, int start, int end) {
+    public static long parseLong(char[] buf, int start, int end) {
         boolean negate = false;
         long result = 0;
 
-        switch (sequence.charAt(start)) {
+        switch (buf[start]) {
             case '-':
                 negate = true;
             case '+':
@@ -42,10 +38,10 @@ public final class NumberParser {
         }
 
         for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
+            char c = buf[i];
 
             if (c == 'E' || c == 'e') {
-                int exp = parseExp(sequence, i + 1, end);
+                int exp = parseExp(buf, i + 1, end);
 
                 if (exp > 0) {
                     result *= exp;
@@ -66,15 +62,11 @@ public final class NumberParser {
         return negate ? -result : result;
     }
 
-    public static int parseInt(CharSequence sequence) {
-        return parseInt(sequence, 0, sequence.length());
-    }
-
-    public static int parseInt(CharSequence sequence, int start, int end) {
+    public static int parseInt(char[] buf, int start, int end) {
         boolean negate = false;
         int result = 0;
 
-        switch (sequence.charAt(start)) {
+        switch (buf[start]) {
             case '-':
                 negate = true;
             case '+':
@@ -83,10 +75,17 @@ public final class NumberParser {
         }
 
         for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
+            char c = buf[i];
 
             if (c == 'E' || c == 'e') {
-                result *= Math.pow(10, parseInt(sequence, i + 1, end));
+                int exp = parseExp(buf, i + 1, end);
+
+                if (exp > 0) {
+                    result *= exp;
+                } else {
+                    result /= -exp;
+                }
+
                 break;
             }
 
@@ -100,18 +99,14 @@ public final class NumberParser {
         return negate ? -result : result;
     }
 
-    public static double parseDouble(CharSequence sequence) {
-        return parseDouble(sequence, 0, sequence.length());
-    }
-
-    public static double parseDouble(CharSequence sequence, int start, int end) {
+    public static double parseDouble(char[] buf, int start, int end) {
         boolean negate = false;
 
         double result = 0;
         double fraction = 0;
         double scale = 1;
 
-        switch (sequence.charAt(start)) {
+        switch (buf[start]) {
             case '-':
                 negate = true;
             case '+':
@@ -120,10 +115,10 @@ public final class NumberParser {
         }
 
         for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
+            char c = buf[i];
 
             if (c == 'E' || c == 'e') {
-                int exp = parseExp(sequence, i + 1, end);
+                int exp = parseExp(buf, i + 1, end);
 
                 if (exp > 0) {
                     result *= exp;
@@ -140,7 +135,7 @@ public final class NumberParser {
 
             if (c == '.') {
                 for (int j = i + 1; j < end; j++, i++) {
-                    c = sequence.charAt(j);
+                    c = buf[j];
 
                     if (c == 'E' || c == 'e') {
                         break;
@@ -168,8 +163,8 @@ public final class NumberParser {
         return negate ? -result : result;
     }
 
-    private static int parseExp(CharSequence sequence, int start, int end) {
-        int exp = parseInt(sequence, start, end);
+    private static int parseExp(char[] buf, int start, int end) {
+        int exp = parseInt(buf, start, end);
         boolean negate = exp < 0;
 
         if (negate) {
@@ -190,18 +185,14 @@ public final class NumberParser {
         return negate ? -result : result;
     }
 
-    public static float parseFloat(CharSequence sequence) {
-        return parseFloat(sequence, 0, sequence.length());
-    }
-
-    public static float parseFloat(CharSequence sequence, int start, int end) {
+    public static float parseFloat(char[] buf, int start, int end) {
         boolean negate = false;
 
         float result = 0;
         float fraction = 0;
         float scale = 1;
 
-        switch (sequence.charAt(start)) {
+        switch (buf[start]) {
             case '-':
                 negate = true;
             case '+':
@@ -210,10 +201,10 @@ public final class NumberParser {
         }
 
         for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
+            char c = buf[i];
 
             if (c == 'E' || c == 'e') {
-                int exp = parseExp(sequence, i + 1, end);
+                int exp = parseExp(buf, i + 1, end);
 
                 if (exp > 0) {
                     result *= exp;
@@ -230,7 +221,7 @@ public final class NumberParser {
 
             if (c == '.') {
                 for (int j = i + 1; j < end; j++, i++) {
-                    c = sequence.charAt(j);
+                    c = buf[j];
 
                     if (c == 'E' || c == 'e') {
                         break;

@@ -77,11 +77,12 @@ public final class BufferBackend extends ValueBackend {
             }
         }
 
-        ValueBackend that = (ValueBackend) obj;
+        return super.equals(obj);
+    }
 
-        return json.isCheckRawValuesOnly()
-                ? getRaw().equals(that.getRaw())
-                : getUnescapedString().equals(that.getUnescapedString());
+    @Override
+    protected boolean checkRawValues() {
+        return json.isCheckRawValuesOnly();
     }
 
     @Override

@@ -16,38 +16,111 @@
 
 package me.whileinside.uson.reader;
 
+import me.whileinside.uson.util.CharArraySequence;
+import me.whileinside.uson.util.NumberParser;
+
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 
 /**
  * @author Unidentified Person
  */
-public interface JsonReader {
+public class JsonReader {
 
-    int getPosition();
+    private final Reader _reader;
+    private final int _bufferLength;
 
-    int read();
-    void rollback();
+    private char[] _buffer;
 
-    char[] getBuffer();
+    private int _pos;
+    private int _read;
 
-    CharSequence getChars(int start, int end);
-    int getInt(int start, int end);
-    long getLong(int start, int end);
-    float getFloat(int start, int end);
-    double getDouble(int start, int end);
+    private IOException _readCause;
 
-    IOException getReadCause();
-
-    static JsonReader ofStream(Reader reader, int bufferLength) {
-        return new StreamJsonReader(reader, bufferLength);
+    public JsonReader(Reader reader, int bufferLength) {
+        _reader = reader;
+        _buffer = new char[_bufferLength = bufferLength];
     }
 
-    static JsonReader ofBuffer(String buffer) {
-        return new BufferedJsonReader(buffer);
+    public JsonReader(char[] buffer) {
+        _reader = null;
+        _bufferLength = 0;
+        _buffer = buffer;
+        _read = buffer.length;
     }
 
-    static JsonReader ofBuffer(char[] buffer) {
-        return new BufferedJsonReader(buffer);
+    public JsonReader(String buffer) {
+        _reader = null;
+        _bufferLength = 0;
+        _buffer = buffer.toCharArray();
+        _read = buffer.length();
     }
+
+    public int getPosition() {
+        return _pos;
+    }
+
+    public int read() {
+        if (_read == _pos) {
+            if (_reader == null) {
+                return -1;
+            }
+
+            try {
+                int value = _reader.read();
+
+                if (value != -1) {
+                    if (_pos == _buffer.length) {
+                        _buffer = Arrays.copyOf(_buffer, _buffer.length + _bufferLength);
+                    }
+
+                    _buffer[_pos] = (char) value;
+                    _pos++;
+                    _read++;
+                }
+
+                return value;
+            } catch (IOException e) {
+                _readCause = e;
+
+                throw new RuntimeException();
+            }
+        } else {
+            return _buffer[_pos++];
+        }
+    }
+
+    public void rollback() {
+        _pos--;
+    }
+
+    public char[] getBuffer() {
+        return _buffer;
+    }
+
+    public CharSequence getChars(int start, int end) {
+        return new CharArraySequence(_buffer, start, end - start);
+    }
+
+    public int getInt(int start, int end) {
+        return NumberParser.parseInt(_buffer, start, end);
+    }
+
+    public long getLong(int start, int end) {
+        return NumberParser.parseLong(_buffer, start, end);
+    }
+
+    public float getFloat(int start, int end) {
+        return NumberParser.parseFloat(_buffer, start, end);
+    }
+
+    public double getDouble(int start, int end) {
+        return NumberParser.parseDouble(_buffer, start, end);
+    }
+
+    public IOException getReadCause() {
+        return _readCause;
+    }
+
 }

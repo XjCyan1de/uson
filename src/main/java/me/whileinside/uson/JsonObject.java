@@ -92,6 +92,14 @@ public class JsonObject extends JsonNode {
         return put(name, JsonNull.INSTANCE);
     }
 
+    public JsonObject putEmptyArray(String name) {
+        return put(name, JsonArray.EMPTY);
+    }
+
+    public JsonObject putEmptyObject(String name) {
+        return put(name, JsonObject.EMPTY);
+    }
+
     public JsonObject put(String name, JsonNode value) {
         _nodes.put(name, value);
 

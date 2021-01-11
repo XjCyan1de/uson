@@ -36,9 +36,13 @@ public final class Json {
             FALSE = "false".toCharArray(),
             NULL = "null".toCharArray();
 
+    /* Json options */
     public static final int PRETTY_PRINTING         = 1;
     public static final int CACHE_BUFFERED_VALUES   = 1 << 1;
     public static final int AUTO_UNESCAPE           = 1 << 2;
+    public static final int CHECK_RAW_VALUES_ONLY   = 1 << 3;
+
+    public static final int DEFAULTS = CACHE_BUFFERED_VALUES | CHECK_RAW_VALUES_ONLY;
 
     private static final Json defaultInstance = new Json();
 
@@ -46,7 +50,7 @@ public final class Json {
     private Indent[] _indentCache = new Indent[4];
 
     private int _bufferLength = 1024;
-    private int _options = 0;
+    private int _options = DEFAULTS;
 
     public boolean isAutoUnescape() {
         return hasOptions(AUTO_UNESCAPE);
@@ -54,6 +58,10 @@ public final class Json {
 
     public boolean isCacheBufferedValues() {
         return hasOptions(CACHE_BUFFERED_VALUES);
+    }
+
+    public boolean isCheckRawValuesOnly() {
+        return hasOptions(CHECK_RAW_VALUES_ONLY);
     }
 
     public boolean isPrettyPrinting() {
@@ -222,7 +230,7 @@ public final class Json {
             }
         }
 
-        return new JsonValue(reader, pos, reader.getPosition(), false, _options);
+        return new JsonValue(reader, pos, reader.getPosition(), false, this);
     }
 
     JsonObject parseObject(JsonReader reader) {
@@ -248,23 +256,22 @@ public final class Json {
                 reader.rollback();
             }
 
-            if (state == 1) {
+            while (shouldSkip(value)) {
+                value = reader.read();
+
+                if (value == -1) {
+                    break;
+                }
+            }
+
+            if (state == 1 || value == ',') {
                 elementKey = fromJson(reader);
                 state = 2;
-            } else {
+            } else if (value == ':' && state == 2) {
                 nodes.put(elementKey.asUnescapedString(), fromJson(reader));
                 elementKey = null;
 
                 state = 0;
-            }
-
-            // skip all spaces and tabs
-            while (shouldSkip(value = reader.read()));
-
-            if (value == ',') {
-                state = 1;
-            } else if (value == ':' && state == 2) {
-                state = 3;
             } else if (value == '}') {
                 return new JsonObject(nodes);
             } else {
@@ -325,7 +332,7 @@ public final class Json {
                 if (value == '\\') {
                     escape = true;
                 } else if (value == '\"') {
-                    return new JsonValue(reader, pos, reader.getPosition() - 1, true, _options);
+                    return new JsonValue(reader, pos, reader.getPosition() - 1, true, this);
                 }
             }
         }

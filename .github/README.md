@@ -23,7 +23,7 @@ Add as dependency
 <dependency>
     <groupId>com.github.unidpers</groupId>
     <artifactId>uson</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
 </dependency>
 ```
 > Gradle
@@ -35,7 +35,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.unidpers:uson:1.1.0-SNAPSHOT'
+    implementation 'com.github.unidpers:uson:1.2.0-SNAPSHOT'
 }
 ```
 Usage

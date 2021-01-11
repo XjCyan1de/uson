@@ -68,4 +68,17 @@ public class JsonBoolean extends JsonNode {
     public boolean asBoolean() {
         return value;
     }
+
+    @Override
+    public int hashCode() {
+        return Boolean.hashCode(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof JsonBoolean)) return false;
+
+        return value == ((JsonBoolean) obj).value;
+    }
 }

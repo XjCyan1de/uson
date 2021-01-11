@@ -98,6 +98,42 @@ public class JsonObject extends JsonNode {
         return this;
     }
 
+    public JsonObject put(String name, String... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, byte... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, short... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, int... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, long... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, float... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, double... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, BigDecimal... value) {
+        return put(name, new JsonArray(value));
+    }
+
+    public JsonObject put(String name, boolean... value) {
+        return put(name, new JsonArray(value));
+    }
+
     public JsonObject put(String name, String value) {
         return put(name, new JsonValue(value));
     }
@@ -123,6 +159,10 @@ public class JsonObject extends JsonNode {
     }
 
     public JsonObject put(String name, double value) {
+        return put(name, new JsonValue(value));
+    }
+
+    public JsonObject put(String name, BigDecimal value) {
         return put(name, new JsonValue(value));
     }
 
@@ -271,4 +311,16 @@ public class JsonObject extends JsonNode {
         return _nodes.get(name);
     }
 
+    @Override
+    public int hashCode() {
+        return _nodes.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof JsonObject)) return false;
+
+        return _nodes.equals(((JsonObject) obj)._nodes);
+    }
 }

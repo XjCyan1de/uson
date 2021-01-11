@@ -20,13 +20,32 @@ import me.whileinside.uson.Json;
 
 import java.math.BigDecimal;
 
-public final class StringBackend implements ValueBackend {
+public final class StringBackend extends ValueBackend {
 
     private final String value;
     private String escaped;
 
     public StringBackend(String value) {
         this.value = value;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ValueBackend)) return false;
+
+        if (obj instanceof StringBackend) {
+            StringBackend that = (StringBackend) obj;
+
+            return value.equals(that.value);
+        }
+
+        return super.equals(obj);
     }
 
     @Override
@@ -45,11 +64,6 @@ public final class StringBackend implements ValueBackend {
 
     @Override
     public String getString() {
-        return value;
-    }
-
-    @Override
-    public String getUnescapedString() {
         return value;
     }
 

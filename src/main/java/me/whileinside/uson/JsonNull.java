@@ -38,4 +38,14 @@ public class JsonNull extends JsonNode {
     public String toString() {
         return "Null";
     }
+
+    @Override
+    public int hashCode() {
+        return INSTANCE == this ? super.hashCode() : INSTANCE.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof JsonNull;
+    }
 }

@@ -35,8 +35,8 @@ public class JsonValue extends JsonNode {
         this.string = string;
     }
 
-    JsonValue(JsonReader reader, int begin, int end, boolean string, int options) {
-        this(new BufferBackend(reader, begin, end, options), string);
+    JsonValue(JsonReader reader, int begin, int end, boolean string, Json json) {
+        this(new BufferBackend(reader, begin, end, json), string);
     }
 
     public JsonValue(BigDecimal value) {
@@ -122,7 +122,11 @@ public class JsonValue extends JsonNode {
 
     @Override
     public int hashCode() {
-        return asString().hashCode();
+        int hash = 1;
+        hash = hash * 31 + (string ? 1 : 0);
+        hash = hash * 31 + backend.hashCode();
+
+        return hash;
     }
 
     @Override
@@ -131,8 +135,7 @@ public class JsonValue extends JsonNode {
         if (!(o instanceof JsonValue)) return false;
 
         JsonValue value = (JsonValue) o;
-
-        return asRaw().equals(value.asRaw());
+        return string == value.string && backend.equals(value.backend);
     }
 
     @Override

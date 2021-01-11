@@ -44,6 +44,78 @@ public class JsonArray extends JsonNode  {
         this(Arrays.asList(nodes));
     }
 
+    public JsonArray(String... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (String value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(int... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (int value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(double... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (double value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(float... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (float value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(long... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (long value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(byte... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (byte value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(short... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (short value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(boolean... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (boolean value : values) {
+            add(value);
+        }
+    }
+
+    public JsonArray(BigDecimal... values) {
+        _nodes = new ArrayList<>(values.length);
+
+        for (BigDecimal value : values) {
+            add(value);
+        }
+    }
+
     public JsonArray(Collection<JsonNode> nodes) {
         this(new ArrayList<>(nodes));
     }
@@ -128,6 +200,19 @@ public class JsonArray extends JsonNode  {
 
     public JsonArray addNull() {
         return add(JsonNull.INSTANCE);
+    }
+
+    @Override
+    public int hashCode() {
+        return _nodes.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof JsonArray)) return false;
+
+        return _nodes.equals(((JsonArray) obj)._nodes);
     }
 
 }

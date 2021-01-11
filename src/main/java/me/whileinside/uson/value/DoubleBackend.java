@@ -18,7 +18,7 @@ package me.whileinside.uson.value;
 
 import java.math.BigDecimal;
 
-public final class DoubleBackend implements ValueBackend {
+public final class DoubleBackend extends ValueBackend {
 
     private final double value;
 
@@ -27,23 +27,27 @@ public final class DoubleBackend implements ValueBackend {
     }
 
     @Override
-    public String getEscapedString() {
-        return Double.toString(value);
+    public int hashCode() {
+        return Double.hashCode(value);
     }
 
     @Override
-    public CharSequence getRaw() {
-        return getEscapedString();
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ValueBackend)) return false;
+
+        if (obj instanceof DoubleBackend) {
+            DoubleBackend that = (DoubleBackend) obj;
+
+            return value == that.value;
+        }
+
+        return super.equals(obj);
     }
 
     @Override
     public String getString() {
-        return getEscapedString();
-    }
-
-    @Override
-    public String getUnescapedString() {
-        return getEscapedString();
+        return Double.toString(value);
     }
 
     @Override

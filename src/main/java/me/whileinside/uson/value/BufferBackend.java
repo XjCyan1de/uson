@@ -25,25 +25,25 @@ import java.math.BigDecimal;
 /**
  * @author Unidentified Person
  */
-public final class BufferBackend implements ValueBackend {
+public final class BufferBackend extends ValueBackend {
 
     private final JsonReader reader;
     private final int begin, end;
 
-    private final boolean preferEscaped;
+    private final Json json;
+
     private Lazy<String> unescaped, escaped;
 
-    public BufferBackend(JsonReader reader, int begin, int end, int options) {
+    public BufferBackend(JsonReader reader, int begin, int end, Json json) {
         this.reader = reader;
         this.begin = begin;
         this.end = end;
+        this.json = json;
 
-        if ((options & Json.CACHE_BUFFERED_VALUES) != 0) {
+        if (json.isCacheBufferedValues()) {
             this.unescaped = Lazy.of(this::_getUnescapedString);
             this.escaped = Lazy.of(this::_getEscapedString);
         }
-
-        preferEscaped = (options & Json.AUTO_UNESCAPE) == 0;
     }
 
     private String _getUnescapedString() {
@@ -55,13 +55,43 @@ public final class BufferBackend implements ValueBackend {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + begin;
+        hash = hash * 31 + end;
+        hash = hash * 31 + reader.hashCode();
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ValueBackend)) return false;
+
+        if (obj instanceof BufferBackend) {
+            BufferBackend that = (BufferBackend) obj;
+
+            if (reader == that.reader && begin == that.begin && end == that.end) {
+                return true;
+            }
+        }
+
+        ValueBackend that = (ValueBackend) obj;
+
+        return json.isCheckRawValuesOnly()
+                ? getRaw().equals(that.getRaw())
+                : getUnescapedString().equals(that.getUnescapedString());
+    }
+
+    @Override
     public CharSequence getRaw() {
         return reader.getChars(begin, end);
     }
 
     @Override
     public String getString() {
-        return preferEscaped ? getEscapedString() : getUnescapedString();
+        return json.isAutoUnescape() ? getUnescapedString() : getEscapedString();
     }
 
     @Override

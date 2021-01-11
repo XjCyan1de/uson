@@ -21,22 +21,37 @@ import java.math.BigDecimal;
 /**
  * @author Unidentified Person
  */
-public interface ValueBackend {
+public abstract class ValueBackend {
 
-    CharSequence getRaw();
+    public CharSequence getRaw() {
+        return getString();
+    }
 
-    String getString();
+    public abstract String getString();
 
-    String getUnescapedString();
-    String getEscapedString();
+    public String getUnescapedString() {
+        return getString();
+    }
 
-    byte getByte();
-    short getShort();
-    int getInt();
-    long getLong();
-    double getDouble();
-    float getFloat();
-    boolean getBoolean();
-    BigDecimal getBigDecimal();
+    public String getEscapedString() {
+        return getString();
+    }
 
+    public abstract byte getByte();
+    public abstract short getShort();
+    public abstract int getInt();
+    public abstract long getLong();
+    public abstract double getDouble();
+    public abstract float getFloat();
+    public abstract boolean getBoolean();
+    public abstract BigDecimal getBigDecimal();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ValueBackend)) return false;
+
+        ValueBackend that = (ValueBackend) obj;
+        return getRaw().equals(that.getRaw());
+    }
 }

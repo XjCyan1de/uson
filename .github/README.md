@@ -20,11 +20,13 @@ Add as dependency
     </repository>
 </repositories>
 
-<dependency>
-    <groupId>com.github.unidpers</groupId>
-    <artifactId>uson</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>com.github.unidpers</groupId>
+        <artifactId>uson</artifactId>
+        <version>1.2.1-SNAPSHOT</version>
+    </dependency>
+</dependencies>
 ```
 > Gradle
 ```groovy
@@ -35,7 +37,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.unidpers:uson:1.2.0-SNAPSHOT'
+    implementation 'com.github.unidpers:uson:1.2.1-SNAPSHOT'
 }
 ```
 Usage

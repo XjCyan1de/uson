@@ -45,7 +45,14 @@ public final class NumberParser {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                result *= Math.pow(10, parseInt(sequence, i + 1, end));
+                int exp = parseExp(sequence, i + 1, end);
+
+                if (exp > 0) {
+                    result *= exp;
+                } else {
+                    result /= -exp;
+                }
+
                 break;
             }
 
@@ -116,9 +123,17 @@ public final class NumberParser {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                double exp = Math.pow(10, parseInt(sequence, i + 1, end));
-                result *= exp;
-                fraction *= exp;
+                int exp = parseExp(sequence, i + 1, end);
+
+                if (exp > 0) {
+                    result *= exp;
+                    fraction *= exp;
+                } else {
+                    exp = -exp;
+
+                    result /= exp;
+                    fraction /= exp;
+                }
 
                 break;
             }
@@ -153,6 +168,28 @@ public final class NumberParser {
         return negate ? -result : result;
     }
 
+    private static int parseExp(CharSequence sequence, int start, int end) {
+        int exp = parseInt(sequence, start, end);
+        boolean negate = exp < 0;
+
+        if (negate) {
+            exp = -exp;
+        }
+
+        int result = 1;
+        int base = 10;
+
+        while (exp != 0) {
+            if ((exp & 1) == 1)
+                result *= base;
+
+            exp >>= 1;
+            base *= base;
+        }
+
+        return negate ? -result : result;
+    }
+
     public static float parseFloat(CharSequence sequence) {
         return parseFloat(sequence, 0, sequence.length());
     }
@@ -176,9 +213,17 @@ public final class NumberParser {
             char c = sequence.charAt(i);
 
             if (c == 'E' || c == 'e') {
-                float exp = (float) Math.pow(10, parseInt(sequence, i + 1, end));
-                result *= exp;
-                fraction *= exp;
+                int exp = parseExp(sequence, i + 1, end);
+
+                if (exp > 0) {
+                    result *= exp;
+                    fraction *= exp;
+                } else {
+                    exp = -exp;
+
+                    result /= exp;
+                    fraction /= exp;
+                }
 
                 break;
             }

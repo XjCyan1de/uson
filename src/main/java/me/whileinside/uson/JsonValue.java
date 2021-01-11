@@ -39,8 +39,8 @@ public class JsonValue extends JsonNode {
         this(new BufferBackend(reader, begin, end, options), string);
     }
 
-    public JsonValue(boolean value) {
-        this(new BooleanBackend(value), false);
+    public JsonValue(BigDecimal value) {
+        this(new BigDecimalBackend(value), false);
     }
 
     public JsonValue(byte value) {

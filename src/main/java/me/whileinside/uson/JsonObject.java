@@ -88,6 +88,10 @@ public class JsonObject extends JsonNode {
         return _nodes.containsKey(name);
     }
 
+    public JsonObject putNull(String name) {
+        return put(name, JsonNull.INSTANCE);
+    }
+
     public JsonObject put(String name, JsonNode value) {
         _nodes.put(name, value);
 
@@ -123,7 +127,7 @@ public class JsonObject extends JsonNode {
     }
 
     public JsonObject put(String name, boolean value) {
-        return put(name, new JsonValue(value));
+        return put(name, JsonBoolean.valueOf(value));
     }
 
     public void remove(String name) {

@@ -71,6 +71,7 @@ public class JsonArray extends JsonNode  {
 
     public JsonArray add(@NotNull JsonNode node) {
         nodes().add(node);
+
         return this;
     }
 
@@ -90,39 +91,43 @@ public class JsonArray extends JsonNode  {
     }
 
     public JsonArray add(@NotNull String value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(byte value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(short value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(int value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(long value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(float value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(double value) {
-        return null;
+        return add(new JsonValue(value));
     }
 
     public JsonArray add(boolean value) {
-        return null;
+        return add(JsonBoolean.valueOf(value));
     }
 
     public JsonArray add(@NotNull BigDecimal value) {
-        return null;
+        return add(new JsonValue(value));
+    }
+
+    public JsonArray addNull() {
+        return add(JsonNull.INSTANCE);
     }
 
 }

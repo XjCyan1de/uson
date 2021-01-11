@@ -114,4 +114,10 @@ final class StreamJsonReader implements JsonReader {
     public IOException getReadCause() {
         return _readCause;
     }
+
+    @Override
+    public String toString() {
+        return "Stream[" + _reader.getClass().getSimpleName() + "/" + _buffer.length + "+" + _pos + "]";
+    }
+
 }

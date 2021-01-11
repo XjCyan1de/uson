@@ -85,7 +85,7 @@ public final class Json {
     }
 
     public JsonNode fromJson(String json) {
-        return fromJson(JsonReader.ofBuffer(json.toCharArray()));
+        return fromJson(JsonReader.ofBuffer(json));
     }
 
     public JsonNode fromJson(char[] json) {
@@ -540,28 +540,6 @@ public final class Json {
         return value == ' ' || value == '\r' || value == '\n' || value == '\t';
     }
 
-    static int parseUTF16(CharSequence sequence) {
-        return parseUTF16(sequence, 0, sequence.length());
-    }
-
-    static int parseUTF16(CharSequence sequence, int start, int end) {
-        int result = 0;
-
-        for (int i = start; i < end; i++) {
-            char c = sequence.charAt(i);
-
-            if (c >= '0' && c <= '9') {
-                result = (result << 4) + (c - '0');
-            } else if (c >= 'A' && c <= 'Z') {
-                result = (result << 4) + (c - 'A' + 10);
-            } else if (c >= 'a' && c <= 'z') {
-                result = (result << 4) + (c - 'a' + 10);
-            }
-        }
-
-        return result;
-    }
-
     static char[] toUTF16(int value) {
         char[] result = new char[4];
 
@@ -580,15 +558,18 @@ public final class Json {
     public static String escape(String unescaped) {
         StringBuilder builder = new StringBuilder(unescaped.length());
 
-        for (char value : unescaped.toCharArray()) {
-            if (value > 256) {
-                builder.append("\\u").append(toUTF16(value));
-                continue;
-            }
+        for (int i = 0; i < unescaped.length(); i++) {
+            char ch = unescaped.charAt(i);
 
-            switch (value) {
+            switch (ch) {
+                case '\"':
+                    builder.append("\\\"");
+                    break;
                 case '\\':
                     builder.append("\\\\");
+                    break;
+                case '/':
+                    builder.append("\\/");
                     break;
                 case '\r':
                     builder.append("\\r");
@@ -606,7 +587,12 @@ public final class Json {
                     builder.append("\\f");
                     break;
                 default:
-                    builder.append(value);
+                    if(ch <= '\u001F' || ch >= '\u007F' && ch <= '\u009F' || ch >= '\u2000' && ch <= '\u20FF') {
+                        builder.append("\\u").append(toUTF16(ch));
+                    } else {
+                        builder.append(ch);
+                    }
+
                     break;
             }
         }
@@ -629,8 +615,22 @@ public final class Json {
             if (backslash) {
                 switch (value) {
                     case 'u':
-                        value = (char) parseUTF16(escaped, i + 1, i + 5);
-                        i += 4;
+                        int result = 0;
+
+                        for (int j = i + 1, end = i + 5; j < end; i++, j++) {
+                            char c = escaped.charAt(j);
+
+                            if (c >= '0' && c <= '9') {
+                                result = (result << 4) + (c - '0');
+                            } else if (c >= 'A' && c <= 'Z') {
+                                result = (result << 4) + (c - 'A' + 10);
+                            } else if (c >= 'a' && c <= 'z') {
+                                result = (result << 4) + (c - 'a' + 10);
+                            }
+                        }
+
+                        value = (char) result;
+
                         break;
                     case 'r':
                         value = '\r';

@@ -29,6 +29,30 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JsonTest {
 
     @Test
+    public void testUnescape() {
+        assertEquals("Привет мир!", Json.unescape("Привет мир!"));
+        assertEquals("\u0000 is NULL", Json.unescape("\\u0000 is NULL"));
+        assertEquals("\n is NEWLINE", Json.unescape("\\n is NEWLINE"));
+        assertEquals("\t is TAB", Json.unescape("\\t is TAB"));
+        assertEquals("\b is BACKSPACE", Json.unescape("\\b is BACKSPACE"));
+        assertEquals("\r is CARRIAGE RETURN", Json.unescape("\\r is CARRIAGE RETURN"));
+        assertEquals("\f is FORMFEED", Json.unescape("\\f is FORMFEED"));
+        assertEquals("\" is DOUBLE QUOTE", Json.unescape("\\\" is DOUBLE QUOTE"));
+    }
+
+    @Test
+    public void testEscape() {
+        assertEquals("Привет мир!", Json.escape("Привет мир!"));
+        assertEquals("\\u0000 is NULL", Json.escape("\u0000 is NULL"));
+        assertEquals("\\n is NEWLINE", Json.escape("\n is NEWLINE"));
+        assertEquals("\\t is TAB", Json.escape("\t is TAB"));
+        assertEquals("\\b is BACKSPACE", Json.escape("\b is BACKSPACE"));
+        assertEquals("\\r is CARRIAGE RETURN", Json.escape("\r is CARRIAGE RETURN"));
+        assertEquals("\\f is FORMFEED", Json.escape("\f is FORMFEED"));
+        assertEquals("\\\" is DOUBLE QUOTE", Json.escape("\" is DOUBLE QUOTE"));
+    }
+
+    @Test
     public void testStream() throws IOException {
         Json json = Json.defaultInstance();
         json.addOptions(Json.AUTO_UNESCAPE);

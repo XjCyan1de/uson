@@ -43,6 +43,10 @@ public interface JsonReader {
         return new StreamJsonReader(reader, bufferLength);
     }
 
+    static JsonReader ofBuffer(String buffer) {
+        return new BufferedJsonReader(buffer);
+    }
+
     static JsonReader ofBuffer(char[] buffer) {
         return new BufferedJsonReader(buffer);
     }

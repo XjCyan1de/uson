@@ -26,10 +26,14 @@ import java.io.IOException;
  */
 final class BufferedJsonReader implements JsonReader {
 
-    private final char[] _buffer;
+    private final CharSequence _buffer;
     private int _pos;
 
     public BufferedJsonReader(char[] buffer) {
+        _buffer = new CharArraySequence(buffer);
+    }
+
+    public BufferedJsonReader(String buffer) {
         _buffer = buffer;
     }
 
@@ -40,7 +44,7 @@ final class BufferedJsonReader implements JsonReader {
 
     @Override
     public int read() {
-        return _pos == _buffer.length ? -1 : _buffer[_pos++];
+        return _pos == _buffer.length() ? -1 : _buffer.charAt(_pos++);
     }
 
     @Override
@@ -48,38 +52,44 @@ final class BufferedJsonReader implements JsonReader {
         _pos--;
     }
 
+    // todo optimize
     @Override
     public char[] getBuffer() {
-        return _buffer;
+        return _buffer.toString().toCharArray();
     }
 
     @Override
     public CharSequence getChars(int start, int end) {
-        return new CharArraySequence(_buffer, start, end - start);
+        return _buffer.subSequence(start, end);
     }
 
     @Override
     public int getInt(int start, int end) {
-        return NumberParser.parseInt(new CharArraySequence(_buffer), start, end);
+        return NumberParser.parseInt(_buffer, start, end);
     }
 
     @Override
     public long getLong(int start, int end) {
-        return NumberParser.parseLong(new CharArraySequence(_buffer), start, end);
+        return NumberParser.parseLong(_buffer, start, end);
     }
 
     @Override
     public float getFloat(int start, int end) {
-        return NumberParser.parseFloat(new CharArraySequence(_buffer), start, end);
+        return NumberParser.parseFloat(_buffer, start, end);
     }
 
     @Override
     public double getDouble(int start, int end) {
-        return NumberParser.parseDouble(new CharArraySequence(_buffer), start, end);
+        return NumberParser.parseDouble(_buffer, start, end);
     }
 
     @Override
     public IOException getReadCause() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Buffer[" + _buffer.getClass().getSimpleName() + "/" + _buffer.length() + "]";
     }
 }

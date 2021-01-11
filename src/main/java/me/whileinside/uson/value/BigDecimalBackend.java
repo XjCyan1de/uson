@@ -18,17 +18,17 @@ package me.whileinside.uson.value;
 
 import java.math.BigDecimal;
 
-public final class BooleanBackend implements ValueBackend {
+public final class BigDecimalBackend implements ValueBackend {
 
-    private final boolean value;
+    private final BigDecimal value;
 
-    public BooleanBackend(boolean value) {
+    public BigDecimalBackend(BigDecimal value) {
         this.value = value;
     }
 
     @Override
     public String getEscapedString() {
-        return value ? "true" : "false";
+        return value.toString();
     }
 
     @Override
@@ -48,41 +48,41 @@ public final class BooleanBackend implements ValueBackend {
 
     @Override
     public byte getByte() {
-        throw new NumberFormatException();
+        return value.byteValue();
     }
 
     @Override
     public short getShort() {
-        throw new NumberFormatException();
+        return value.shortValue();
     }
 
     @Override
     public int getInt() {
-        throw new NumberFormatException();
+        return value.intValue();
     }
 
     @Override
     public long getLong() {
-        throw new NumberFormatException();
+        return value.longValue();
     }
 
     @Override
     public double getDouble() {
-        throw new NumberFormatException();
+        return value.doubleValue();
     }
 
     @Override
     public float getFloat() {
-        throw new NumberFormatException();
+        return value.floatValue();
     }
 
     @Override
     public boolean getBoolean() {
-        return value;
+        return false;
     }
 
     @Override
     public BigDecimal getBigDecimal() {
-        throw new NumberFormatException();
+        return value;
     }
 }

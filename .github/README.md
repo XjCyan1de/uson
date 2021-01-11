@@ -1,5 +1,7 @@
 [![](https://img.shields.io/github/license/unidpers/uson)](../LICENSE)
 [![](https://img.shields.io/github/issues/unidpers/uson)](https://github.com/unidpers/uson/issues)
+[![](https://img.shields.io/github/downloads/unidpers/uson/total)](https://github.com/unidpers/uson/releases)
+[![](https://img.shields.io/github/workflow/status/unidpers/uson/gradle-build)]()
 [![](https://jitpack.io/v/unidpers/uson.svg)](https://jitpack.io/#unidpers/uson)
 
 Description

@@ -56,63 +56,56 @@ public final class Json {
 
     }
 
-    /* ============================= Json Options =================================== */
-    public static final int PRETTY_PRINTING = 1;                              //
-    public static final int CACHE_BUFFERED_VALUES = 1 << 1;                         //
-    public static final int AUTO_UNESCAPE = 1 << 2;                         //
-    public static final int CHECK_RAW_VALUES_ONLY = 1 << 3;                         //
-    public static final int DEFAULTS = CACHE_BUFFERED_VALUES | CHECK_RAW_VALUES_ONLY; //
-    public static final int NO_OPTIONS = 0;                                           //
-    /* ============================================================================== */
-
     private static final Json defaultInstance = new Json();
 
     private IndentType _indentType;
     private Indent[] _indentCache;
 
     private int _bufferLength;
-    private int _options;
+
+    private boolean autoUnescape;
+    private boolean cacheBufferedValues;
+    private boolean checkRawValues;
+    private boolean prettyPrinting;
 
     public Json() {
         setIndentType(IndentType.ONE_TAB);
         setBufferLength(1024);
-        setOptions(DEFAULTS);
+
+        setCacheBufferedValues(true);
+        setCheckRawValues(true);
     }
 
     public boolean isAutoUnescape() {
-        return hasOptions(AUTO_UNESCAPE);
+        return autoUnescape;
     }
 
     public boolean isCacheBufferedValues() {
-        return hasOptions(CACHE_BUFFERED_VALUES);
+        return cacheBufferedValues;
     }
 
-    public boolean isCheckRawValuesOnly() {
-        return hasOptions(CHECK_RAW_VALUES_ONLY);
+    public boolean isCheckRawValues() {
+        return checkRawValues;
     }
 
     public boolean isPrettyPrinting() {
-        return hasOptions(PRETTY_PRINTING);
+        return prettyPrinting;
     }
 
-    public void setOptions(int options) {
-        _options = options;
+    public void setAutoUnescape(boolean autoUnescape) {
+        this.autoUnescape = autoUnescape;
     }
 
-    public void addOptions(int options) {
-        _options |= options;
+    public void setCacheBufferedValues(boolean cacheBufferedValues) {
+        this.cacheBufferedValues = cacheBufferedValues;
     }
 
-    public void removeOptions(int options) {
-        _options &= ~options;
+    public void setCheckRawValues(boolean checkRawValues) {
+        this.checkRawValues = checkRawValues;
     }
 
-    public void clearOptions() {
-        _options = NO_OPTIONS;
-    }
-
-    public boolean hasOptions(int options) {
-        return (_options & options) == options;
+    public void setPrettyPrinting(boolean prettyPrinting) {
+        this.prettyPrinting = prettyPrinting;
     }
 
     public void setIndentType(IndentType indentType) {

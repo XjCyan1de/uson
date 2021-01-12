@@ -27,7 +27,7 @@ Add as dependency
     <dependency>
         <groupId>com.github.unidpers</groupId>
         <artifactId>uson</artifactId>
-        <version>1.3.1-SNAPSHOT</version>
+        <version>1.3.2-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -40,7 +40,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.unidpers:uson:1.3.1-SNAPSHOT'
+    implementation 'com.github.unidpers:uson:1.3.2-SNAPSHOT'
 }
 ```
 Usage
@@ -54,7 +54,7 @@ Json json = Json.defaultInstance();
 // If you know that file contains characters like this
 // you can to uncomment the following line
 // 
-// json.addOptions(Json.AUTO_UNESCAPE);
+// json.setAutoUnescape(true);
 
 JsonNode node = json.fromJson(new File(filename));
 JsonObject object = node.asObject();
@@ -69,7 +69,7 @@ Json json = Json.defaultInstance();
 // If you need more human-readable output
 // you can to uncomment the following line
 //
-// json.addOptions(Json.PRETTY_PRINTING);
+// json.setPrettyPrinting(true);
 
 JsonObject object = new JsonObject();
 object.put("message", "Hello world!");

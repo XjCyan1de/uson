@@ -18,7 +18,6 @@ package me.whileinside.uson.value;
 
 import me.whileinside.uson.Json;
 import me.whileinside.uson.reader.JsonReader;
-import me.whileinside.uson.util.Lazy;
 
 import java.math.BigDecimal;
 
@@ -31,19 +30,13 @@ public final class BufferBackend extends ValueBackend {
     private final int begin, end;
 
     private final Json json;
-
-    private Lazy<String> unescaped, escaped;
+    private String unescaped, escaped;
 
     public BufferBackend(JsonReader reader, int begin, int end, Json json) {
         this.reader = reader;
         this.begin = begin;
         this.end = end;
         this.json = json;
-
-        if (json.isCacheBufferedValues()) {
-            this.unescaped = Lazy.of(this::_getUnescapedString);
-            this.escaped = Lazy.of(this::_getEscapedString);
-        }
     }
 
     private String _getUnescapedString() {
@@ -82,7 +75,7 @@ public final class BufferBackend extends ValueBackend {
 
     @Override
     protected boolean checkRawValues() {
-        return json.isCheckRawValuesOnly();
+        return json.isCheckRawValues();
     }
 
     @Override
@@ -97,12 +90,28 @@ public final class BufferBackend extends ValueBackend {
 
     @Override
     public String getUnescapedString() {
-        return unescaped == null ? _getUnescapedString() : unescaped.get();
+        if (json.isCacheBufferedValues()) {
+            if (unescaped == null) {
+                unescaped = _getUnescapedString();
+            }
+
+            return unescaped;
+        }
+
+        return _getUnescapedString();
     }
 
     @Override
     public String getEscapedString() {
-        return escaped == null ? _getEscapedString() : escaped.get();
+        if (json.isCacheBufferedValues()) {
+            if (escaped == null) {
+                escaped = _getEscapedString();
+            }
+
+            return escaped;
+        }
+
+        return _getEscapedString();
     }
 
     @Override

@@ -6,6 +6,7 @@ plugins {
 
 group = 'com.github.unidpers'
 version = findProperty('github.tag') ?: 'undefined'
+description = 'The simple fast json parser on pure java'
 
 println("Building artifact: ")
 println("${project.group}:${project.name}:${project.version}")
@@ -47,8 +48,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             pom {
-                name = 'Uson'
-                description = 'The simple fast json parser on pure java'
+                name = project.name
+                description = project.description
 
                 url = 'https://github.com/unidpers/uson'
 
@@ -84,8 +85,8 @@ publishing {
                 }
             }
 
-            groupId = group
-            artifactId = name
+            groupId = project.group
+            artifactId = project.name
             version = project.version
 
             from components.java

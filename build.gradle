@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.github.unidpers'
-version = findProperty('github.tag') ?: 'undefined'
+version = System.getenv('github.tag') ?: 'undefined'
 
 println("Building artifact: ")
 println("${project.group}:${project.name}:${project.version}")

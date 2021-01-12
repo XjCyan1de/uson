@@ -23,6 +23,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle  
       - name: Prepare to publish
         run: |
+          echo '${{secrets.GPG_KEY_CONTENTS}}'
           echo '${{secrets.GPG_KEY_CONTENTS}}' | base64 -d > publish_key.gpg
           gpg --quiet --batch --yes --decrypt --passphrase="${{secrets.SECRET_PASSPHRASE}}" \
           --output secret.gpg publish_key.gpg

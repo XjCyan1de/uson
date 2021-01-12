@@ -52,9 +52,7 @@ public class JsonTest {
                 .put("age", 20));
 
         assertEquals("{\"empty_array\":[],\"empty_object\":{},\"user\":{\"first_name\":\"Unidentified\",\"last_name\":\"Person\",\"age\":20}}",
-                json.toJson(object));
-
-        json.setPrettyPrinting(true);
+                object.toSimpleJson());
 
         assertEquals("{\n" +
                 "\t\"empty_array\": [ ],\n" +
@@ -64,9 +62,7 @@ public class JsonTest {
                 "\t\t\"last_name\": \"Person\",\n" +
                 "\t\t\"age\": 20\n" +
                 "\t}\n" +
-                "}", json.toJson(object));
-
-        json.setIndentType(IndentType.ONE_SPACE);
+                "}", object.toPrettyJson());
 
         assertEquals("{\n" +
                 " \"empty_array\": [ ],\n" +
@@ -76,7 +72,7 @@ public class JsonTest {
                 "  \"last_name\": \"Person\",\n" +
                 "  \"age\": 20\n" +
                 " }\n" +
-                "}", json.toJson(object));
+                "}", object.toPrettyJson(IndentType.ONE_SPACE));
     }
 
     @Test
@@ -106,9 +102,9 @@ public class JsonTest {
 
     @Test
     void testKeyword_toJson() {
-        assertEquals("true", json.toJson(JsonBoolean.TRUE));
-        assertEquals("false", json.toJson(JsonBoolean.FALSE));
-        assertEquals("null", json.toJson(JsonNull.INSTANCE));
+        assertEquals("true", JsonBoolean.TRUE.toSimpleJson());
+        assertEquals("false", JsonBoolean.FALSE.toSimpleJson());
+        assertEquals("null", JsonNull.INSTANCE.toSimpleJson());
     }
 
     @Test
@@ -120,8 +116,8 @@ public class JsonTest {
 
     @Test
     void testArray_toJson() {
-        assertEquals("[100,200,300,400,500]", json.toJson(new JsonArray(100, 200, 300, 400, 500)));
-        assertEquals("[\"100\",\"200\",\"300\",\"400\",\"500\"]", json.toJson(new JsonArray("100", "200", "300", "400", "500")));
+        assertEquals("[100,200,300,400,500]", new JsonArray(100, 200, 300, 400, 500).toSimpleJson());
+        assertEquals("[\"100\",\"200\",\"300\",\"400\",\"500\"]", new JsonArray("100", "200", "300", "400", "500").toSimpleJson());
     }
 
     @Test
@@ -141,7 +137,7 @@ public class JsonTest {
 
         String result = "{\"message\":\"Hello world!\",\"message_with_illegal_characters\":\"\\ta\\nb\\rc\\fd\\be\\u0000f\",\"null\":null,\"code\":200,\"array\":[1,2,3]}";
 
-        assertEquals(result, json.toJson(object));
+        assertEquals(result, object.toSimpleJson());
     }
 
     @Test
@@ -161,9 +157,9 @@ public class JsonTest {
     @Test
     void testBigDecimal_toJson() {
         assertEquals("0.06455",
-                json.toJson(new JsonValue(BigDecimal.valueOf(64.55E-3))));
+                new JsonValue(BigDecimal.valueOf(64.55E-3)).toSimpleJson());
         assertEquals("-0.06455",
-                json.toJson(new JsonValue(BigDecimal.valueOf(-64.55E-3))));
+                new JsonValue(BigDecimal.valueOf(-64.55E-3)).toSimpleJson());
     }
 
     @Test
@@ -177,9 +173,9 @@ public class JsonTest {
     @Test
     void testLong_toJson() {
         assertEquals("64",
-                json.toJson(new JsonValue(64L)));
+                new JsonValue(64L).toSimpleJson());
         assertEquals("-64",
-                json.toJson(new JsonValue(-64L)));
+                new JsonValue(-64L).toSimpleJson());
     }
 
     @Test
@@ -195,9 +191,9 @@ public class JsonTest {
     @Test
     void testShort_toJson() {
         assertEquals("64",
-                json.toJson(new JsonValue((short) 64)));
+                new JsonValue((short) 64).toSimpleJson());
         assertEquals("-64",
-                json.toJson(new JsonValue((short) -64)));
+                new JsonValue((short) -64).toSimpleJson());
     }
 
     @Test
@@ -213,9 +209,9 @@ public class JsonTest {
     @Test
     void testByte_toJson() {
         assertEquals("64",
-                json.toJson(new JsonValue((byte) 64)));
+                new JsonValue((byte) 64).toSimpleJson());
         assertEquals("-64",
-                json.toJson(new JsonValue((byte) -64)));
+                new JsonValue((byte) -64).toSimpleJson());
     }
 
     @Test
@@ -231,9 +227,9 @@ public class JsonTest {
     @Test
     void testDouble_toJson() {
         assertEquals("64.5",
-                json.toJson(new JsonValue(64.5)));
+                new JsonValue(64.5).toSimpleJson());
         assertEquals("-64.5",
-                json.toJson(new JsonValue(-64.5)));
+                new JsonValue(-64.5).toSimpleJson());
     }
 
     @Test
@@ -247,9 +243,9 @@ public class JsonTest {
     @Test
     void testFloat_toJson() {
         assertEquals("64.5",
-                json.toJson(new JsonValue(64.5F)));
+                new JsonValue(64.5F).toSimpleJson());
         assertEquals("-64.5",
-                json.toJson(new JsonValue(-64.5F)));
+                new JsonValue(-64.5F).toSimpleJson());
     }
 
     @Test
@@ -265,9 +261,9 @@ public class JsonTest {
     @Test
     void testInt_toJson() {
         assertEquals("64",
-                json.toJson(new JsonValue(64)));
+                new JsonValue(64).toSimpleJson());
         assertEquals("-64",
-                json.toJson(new JsonValue(-64)));
+                new JsonValue(-64).toSimpleJson());
     }
 
     @Test
@@ -283,11 +279,11 @@ public class JsonTest {
     @Test
     void testString_toJson() {
         assertEquals("\"Hello world!\"",
-                json.toJson(new JsonValue("Hello world!")));
+                new JsonValue("Hello world!").toSimpleJson());
         assertEquals("\"New line\\nNew line\"",
-                json.toJson(new JsonValue("New line\nNew line")));
+                new JsonValue("New line\nNew line").toSimpleJson());
         assertEquals("\"\\tTab\\\"quote\\/slash\\\\backslash\"",
-                json.toJson(new JsonValue("\tTab\"quote/slash\\backslash")));
+                new JsonValue("\tTab\"quote/slash\\backslash").toSimpleJson());
     }
 
     @Test

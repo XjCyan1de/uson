@@ -16,11 +16,14 @@
 
 package me.whileinside.uson;
 
+import me.whileinside.uson.indent.IndentType;
+import me.whileinside.uson.indent.Indents;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,6 +62,77 @@ public class JsonObject extends JsonNode {
     @Override
     public @NotNull JsonObject asObject() {
         return this;
+    }
+
+    @Override
+    public void toSimpleJson(Appendable appendable) throws IOException {
+        appendable.append('{');
+
+        Iterator<Map.Entry<String, JsonNode>> elements = _nodes.entrySet()
+                .iterator();
+
+        if (!elements.hasNext()) {
+            appendable.append('}');
+            return;
+        }
+
+        for (; ; ) {
+            Map.Entry<String, JsonNode> element = elements.next();
+
+            appendable.append('"');
+            appendable.append(element.getKey());
+            appendable.append('"');
+            appendable.append(':');
+            element.getValue().toSimpleJson(appendable);
+
+            if (!elements.hasNext()) {
+                break;
+            }
+
+            appendable.append(',');
+        }
+
+        appendable.append('}');
+    }
+
+    @Override
+    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+        appendable.append('{');
+
+        Iterator<Map.Entry<String, JsonNode>> elements = _nodes.entrySet()
+                .iterator();
+
+        if (!elements.hasNext()) {
+            appendable.append(' ');
+            appendable.append('}');
+            return;
+        }
+
+        appendable.append('\n');
+
+        for (; ; ) {
+            Map.Entry<String, JsonNode> element = elements.next();
+
+            appendable.append(Indents.getIndentString(indentType, tabs));
+            appendable.append('"');
+            appendable.append(element.getKey());
+            appendable.append('"');
+            appendable.append(':');
+            appendable.append(' ');
+
+            element.getValue().toPrettyJson(appendable, indentType, tabs + 1);
+
+            if (!elements.hasNext()) {
+                break;
+            }
+
+            appendable.append(',');
+            appendable.append('\n');
+        }
+
+        appendable.append('\n');
+        appendable.append(Indents.getIndentString(indentType, tabs - 1));
+        appendable.append('}');
     }
 
     @Override

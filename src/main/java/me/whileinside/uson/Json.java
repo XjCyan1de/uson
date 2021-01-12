@@ -30,8 +30,6 @@ import java.util.*;
  */
 public final class Json {
 
-    private static final Indent[][] INDENT_CACHE = new Indent[IndentType.COUNT][];
-
     private static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
     private static final Keyword[] KEYWORDS = new Keyword[]
@@ -59,8 +57,6 @@ public final class Json {
     private static final Json defaultInstance = new Json();
 
     private IndentType _indentType;
-    private Indent[] _indentCache;
-
     private int _bufferLength;
 
     private boolean autoUnescape;
@@ -110,7 +106,6 @@ public final class Json {
 
     public void setIndentType(IndentType indentType) {
         _indentType = indentType;
-        _indentCache = INDENT_CACHE[_indentType.ordinal()];
     }
 
     public void setBufferLength(int bufferLength) {
@@ -353,154 +348,11 @@ public final class Json {
         throw new IllegalStateException("End of data");
     }
 
-    private void toPrettyJson(JsonNode node, Appendable appendable, int tabs) throws IOException {
-        _toJson(node, appendable);
-
-        if (node.isArray()) {
-            appendable.append('[');
-
-            Iterator<JsonNode> elements = node.asArray().nodeIterator();
-
-            if (!elements.hasNext()) {
-                appendable.append(' ');
-                appendable.append(']');
-                return;
-            }
-
-            appendable.append('\n');
-
-            for (; ; ) {
-                appendable.append(getIndentString(tabs));
-                toPrettyJson(elements.next(), appendable, tabs + 1);
-
-                if (!elements.hasNext()) {
-                    break;
-                }
-
-                appendable.append(',');
-                appendable.append('\n');
-            }
-
-            appendable.append('\n');
-            appendable.append(getIndentString(tabs - 1));
-            appendable.append(']');
-        } else if (node.isObject()) {
-            appendable.append('{');
-
-            Iterator<Map.Entry<String, JsonNode>> elements = node.asObject().nodeIterator();
-
-            if (!elements.hasNext()) {
-                appendable.append(' ');
-                appendable.append('}');
-                return;
-            }
-
-            appendable.append('\n');
-
-            for (; ; ) {
-                Map.Entry<String, JsonNode> element = elements.next();
-
-                appendable.append(getIndentString(tabs));
-                appendable.append('"');
-                appendable.append(element.getKey());
-                appendable.append('"');
-                appendable.append(':');
-                appendable.append(' ');
-
-                toPrettyJson(element.getValue(), appendable, tabs + 1);
-
-                if (!elements.hasNext()) {
-                    break;
-                }
-
-                appendable.append(',');
-                appendable.append('\n');
-            }
-
-            appendable.append('\n');
-            appendable.append(getIndentString(tabs - 1));
-            appendable.append('}');
-        }
-    }
-
-    private void toSimpleJson(JsonNode node, Appendable appendable) throws IOException {
-        _toJson(node, appendable);
-
-        if (node.isArray()) {
-            appendable.append('[');
-
-            Iterator<JsonNode> elements = node.asArray().nodeIterator();
-
-            if (!elements.hasNext()) {
-                appendable.append(']');
-                return;
-            }
-
-            for (; ; ) {
-                toJson(elements.next(), appendable);
-
-                if (!elements.hasNext()) {
-                    break;
-                }
-
-                appendable.append(',');
-            }
-
-            appendable.append(']');
-        } else if (node.isObject()) {
-            appendable.append('{');
-
-            Iterator<Map.Entry<String, JsonNode>> elements = node.asObject()
-                    .nodeIterator();
-
-            if (!elements.hasNext()) {
-                appendable.append('}');
-                return;
-            }
-
-            for (; ; ) {
-                Map.Entry<String, JsonNode> element = elements.next();
-
-                appendable.append('"');
-                appendable.append(element.getKey());
-                appendable.append('"');
-                appendable.append(':');
-                toJson(element.getValue(), appendable);
-
-                if (!elements.hasNext()) {
-                    break;
-                }
-
-                appendable.append(',');
-            }
-
-            appendable.append('}');
-        }
-    }
-
-    private void _toJson(JsonNode node, Appendable appendable) throws IOException {
-        if (node.isNull()) {
-            appendable.append("null");
-        } else if (node.isBoolean()) {
-            appendable.append(node.asRaw());
-        } else if (node.isValue()) {
-            if (node.isString()) {
-                appendable.append('"');
-            }
-
-            appendable.append(node.asRaw());
-
-            if (node.isString()) {
-                appendable.append('"');
-            }
-        }
-    }
-
     public void toJson(JsonNode node, Appendable appendable) throws IOException {
         if (isPrettyPrinting()) {
-            toPrettyJson(node, appendable, 1);
+            node.toPrettyJson(appendable, _indentType);
         } else {
-            toSimpleJson(node, appendable);
+            node.toSimpleJson(appendable);
         }
     }
 
@@ -526,35 +378,6 @@ public final class Json {
         }
 
         return sb.toString();
-    }
-
-    CharSequence getIndentString(int size) {
-        return getIndent(size).getValue();
-    }
-
-    Indent getIndent(int size) {
-        if (size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
-
-        synchronized (INDENT_CACHE) {
-            if (_indentCache == null) {
-                INDENT_CACHE[_indentType.ordinal()] = _indentCache = new Indent[4];
-            }
-
-            if (_indentCache.length <= size) {
-                Indent[] indentCache = new Indent[Math.max(_indentCache.length << 1, size)];
-                System.arraycopy(_indentCache, 0, indentCache, 0, _indentCache.length);
-
-                INDENT_CACHE[_indentType.ordinal()] = _indentCache = indentCache;
-            }
-
-            Indent indent = _indentCache[size];
-
-            if (indent == null || indent.getType() != _indentType) {
-                _indentCache[size] = indent = new Indent(_indentType, size);
-            }
-
-            return indent;
-        }
     }
 
     public static Json defaultInstance() {

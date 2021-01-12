@@ -16,10 +16,12 @@
 
 package me.whileinside.uson;
 
+import me.whileinside.uson.indent.IndentType;
 import me.whileinside.uson.reader.JsonReader;
 import me.whileinside.uson.value.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -113,6 +115,24 @@ public class JsonValue extends JsonNode {
     @Override
     public @NotNull BigDecimal asBigDecimal() {
         return backend.getBigDecimal();
+    }
+
+    @Override
+    public void toSimpleJson(Appendable appendable) throws IOException {
+        if (string) {
+            appendable.append('"');
+        }
+
+        appendable.append(asRaw());
+
+        if (string) {
+            appendable.append('"');
+        }
+    }
+
+    @Override
+    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+        toSimpleJson(appendable);
     }
 
     @Override

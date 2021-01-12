@@ -16,8 +16,10 @@
 
 package me.whileinside.uson;
 
+import me.whileinside.uson.indent.IndentType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -124,5 +126,40 @@ public abstract class JsonNode {
     public @NotNull BigDecimal asBigDecimal() {
         throw new UnsupportedOperationException();
     }
+
+    public String toSimpleJson() {
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            toSimpleJson(sb);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
+    }
+
+    public String toPrettyJson() {
+        return toPrettyJson(IndentType.ONE_TAB);
+    }
+
+    public String toPrettyJson(IndentType indentType) {
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            toPrettyJson(sb, indentType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
+    }
+
+    public void toPrettyJson(Appendable appendable, IndentType indentType) throws IOException {
+        toPrettyJson(appendable, indentType, 1);
+    }
+
+    public abstract void toSimpleJson(Appendable appendable) throws IOException;
+    public abstract void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException;
 
 }

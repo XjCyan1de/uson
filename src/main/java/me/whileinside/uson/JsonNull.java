@@ -16,8 +16,11 @@
 
 package me.whileinside.uson;
 
+import me.whileinside.uson.indent.IndentType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 /**
  * @author Unidentified Person
@@ -48,6 +51,16 @@ public class JsonNull extends JsonNode {
     @Override
     public @NotNull String asEscapedString() {
         return asString();
+    }
+
+    @Override
+    public void toSimpleJson(Appendable appendable) throws IOException {
+        appendable.append(asRaw());
+    }
+
+    @Override
+    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+        toSimpleJson(appendable);
     }
 
     @Override

@@ -34,6 +34,8 @@ public enum IndentType {
     private final char value;
     private final int length;
 
+    public final int idx = ordinal();
+
     IndentType(char value, int length) {
         this.value = value;
         this.length = length;

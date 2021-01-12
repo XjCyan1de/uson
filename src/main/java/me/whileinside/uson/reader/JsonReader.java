@@ -18,6 +18,7 @@ package me.whileinside.uson.reader;
 
 import me.whileinside.uson.util.CharArraySequence;
 import me.whileinside.uson.util.NumberParser;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 /**
  * @author Unidentified Person
  */
+@ApiStatus.Internal
 public final class JsonReader {
 
     private final Reader _reader;

@@ -54,16 +54,19 @@ public class JsonObject extends JsonNode {
         return new JsonObject(new LinkedHashMap<>(nodes));
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isObject() {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull JsonObject asObject() {
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void toSimpleJson(Appendable appendable) throws IOException {
         appendable.append('{');
@@ -95,8 +98,9 @@ public class JsonObject extends JsonNode {
         appendable.append('}');
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+    void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
         appendable.append('{');
 
         Iterator<Map.Entry<String, JsonNode>> elements = _nodes.entrySet()
@@ -135,6 +139,7 @@ public class JsonObject extends JsonNode {
         appendable.append('}');
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Object[" + _nodes.entrySet().stream()
@@ -393,11 +398,13 @@ public class JsonObject extends JsonNode {
         return _nodes.get(name);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return _nodes.hashCode();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;

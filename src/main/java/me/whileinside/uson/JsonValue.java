@@ -73,50 +73,61 @@ public class JsonValue extends JsonNode {
         this(new StringBackend(value), true);
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asString() {
         return backend.getString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asUnescapedString() {
         return backend.getUnescapedString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asEscapedString() {
         return backend.getEscapedString();
     }
 
+    /** {@inheritDoc} */
     public byte asByte() {
         return backend.getByte();
     }
 
+    /** {@inheritDoc} */
     public short asShort() {
         return backend.getShort();
     }
 
+    /** {@inheritDoc} */
     public int asInt() {
         return backend.getInt();
     }
 
+    /** {@inheritDoc} */
     public long asLong() {
         return backend.getLong();
     }
 
+    /** {@inheritDoc} */
     public double asDouble() {
         return backend.getDouble();
     }
 
+    /** {@inheritDoc} */
     public float asFloat() {
         return backend.getFloat();
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull BigDecimal asBigDecimal() {
         return backend.getBigDecimal();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void toSimpleJson(Appendable appendable) throws IOException {
         if (string) {
@@ -130,16 +141,19 @@ public class JsonValue extends JsonNode {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
         toSimpleJson(appendable);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean asBoolean() {
-        return backend.getBoolean();
+        return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int hash = 1;
@@ -149,6 +163,7 @@ public class JsonValue extends JsonNode {
         return hash;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
@@ -158,29 +173,34 @@ public class JsonValue extends JsonNode {
         return string == value.string && backend.equals(value.backend);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isString() {
         return string;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isNumber() {
         return !string;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isValue() {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Value[" + (string ? "\"" + asUnescapedString() + "\"" : asUnescapedString()) + "]";
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull CharSequence asRaw() {
         return asEscapedString();
     }
-    
+
 }

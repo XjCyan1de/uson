@@ -19,9 +19,13 @@ package me.whileinside.uson.indent;
 /**
  * @author Unidentified Person
  */
-public class Indents {
+public final class Indents {
 
     private static final Indent[][] CACHE = new Indent[IndentType.COUNT][];
+
+    private Indents() {
+        throw new UnsupportedOperationException();
+    }
 
     public static CharSequence getIndentString(IndentType type, int size) {
         return getIndent(type, size).getValue();

@@ -42,51 +42,61 @@ public class JsonBoolean extends JsonNode {
         return value ? TRUE : FALSE;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Boolean[" + value + "]";
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull CharSequence asRaw() {
         return asString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isBoolean() {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asString() {
         return Boolean.toString(value);
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asEscapedString() {
         return asString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean asBoolean() {
         return value;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void toSimpleJson(Appendable appendable) throws IOException {
         appendable.append(asRaw());
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+    void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
         toSimpleJson(appendable);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Boolean.hashCode(value);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;

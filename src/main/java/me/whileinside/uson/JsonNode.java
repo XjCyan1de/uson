@@ -27,30 +27,37 @@ import java.math.BigDecimal;
  */
 public abstract class JsonNode {
 
+    /** check if node is an array */
     public boolean isArray() {
         return false;
     }
 
+    /** check if node is an object */
     public boolean isObject() {
         return false;
     }
 
+    /** check if node is a value */
     public boolean isValue() {
         return false;
     }
 
+    /** check if node is a number */
     public boolean isNumber() {
         return false;
     }
 
+    /** check if node is a string */
     public boolean isString() {
         return false;
     }
 
+    /** check if node is a null */
     public boolean isNull() {
         return false;
     }
 
+    /** check if node is a boolean */
     public boolean isBoolean() {
         return false;
     }
@@ -76,57 +83,59 @@ public abstract class JsonNode {
 
     /** cast node as string */
     public @NotNull String asString() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as escaped string */
     public @NotNull String asEscapedString() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
+
     public @NotNull String asUnescapedString() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as byte */
     public byte asByte() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as short */
     public short asShort() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as int */
     public int asInt() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as long */
     public long asLong() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as float */
     public float asFloat() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as double */
     public double asDouble() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as boolean */
     public boolean asBoolean() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
     /** cast node as big decimal */
     public @NotNull BigDecimal asBigDecimal() {
-        throw new UnsupportedOperationException();
+        throw new ClassCastException();
     }
 
+    /** write node as json without any indentations */
     public String toSimpleJson() {
         StringBuilder sb = new StringBuilder();
 
@@ -139,10 +148,12 @@ public abstract class JsonNode {
         return sb.toString();
     }
 
+    /** write node as json with indentations (1 tab) */
     public String toPrettyJson() {
         return toPrettyJson(IndentType.ONE_TAB);
     }
 
+    /** write node as json with indentations */
     public String toPrettyJson(IndentType indentType) {
         StringBuilder sb = new StringBuilder();
 
@@ -155,11 +166,15 @@ public abstract class JsonNode {
         return sb.toString();
     }
 
+    /** write node as json with indentations to specified output */
     public void toPrettyJson(Appendable appendable, IndentType indentType) throws IOException {
         toPrettyJson(appendable, indentType, 1);
     }
 
+    /** write node as json without any indentations to specified output */
     public abstract void toSimpleJson(Appendable appendable) throws IOException;
-    public abstract void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException;
+
+    /** write node as json with indentations to specified output */
+    abstract void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException;
 
 }

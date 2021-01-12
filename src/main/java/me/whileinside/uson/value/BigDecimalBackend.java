@@ -81,11 +81,6 @@ public final class BigDecimalBackend extends ValueBackend {
     }
 
     @Override
-    public boolean getBoolean() {
-        return false;
-    }
-
-    @Override
     public BigDecimal getBigDecimal() {
         return value;
     }

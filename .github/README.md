@@ -27,7 +27,7 @@ Add as dependency
     <dependency>
         <groupId>com.github.unidpers</groupId>
         <artifactId>uson</artifactId>
-        <version>1.3.3-SNAPSHOT</version>
+        <version>1.3.4-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -40,7 +40,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.unidpers:uson:1.3.3-SNAPSHOT'
+    implementation 'com.github.unidpers:uson:1.3.4-SNAPSHOT'
 }
 ```
 Usage

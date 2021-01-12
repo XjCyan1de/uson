@@ -98,11 +98,6 @@ public final class StringBackend extends ValueBackend {
     }
 
     @Override
-    public boolean getBoolean() {
-        return false;
-    }
-
-    @Override
     public BigDecimal getBigDecimal() {
         return null;
     }

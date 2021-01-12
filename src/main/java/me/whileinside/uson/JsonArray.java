@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * @author Unidentified Person
  */
-public class JsonArray extends JsonNode  {
+public class JsonArray extends JsonNode {
 
     public static final JsonArray EMPTY = new JsonArray(Collections.emptyList());
 
@@ -190,7 +190,7 @@ public class JsonArray extends JsonNode  {
     }
 
     @Override
-    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+    void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
         appendable.append('[');
 
         Iterator<JsonNode> elements = _nodes.iterator();

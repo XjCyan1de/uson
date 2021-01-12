@@ -16,11 +16,14 @@
 
 package me.whileinside.uson.value;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.math.BigDecimal;
 
 /**
  * @author Unidentified Person
  */
+@ApiStatus.Internal
 public abstract class ValueBackend {
 
     public CharSequence getRaw() {
@@ -42,12 +45,17 @@ public abstract class ValueBackend {
     }
 
     public abstract byte getByte();
+
     public abstract short getShort();
+
     public abstract int getInt();
+
     public abstract long getLong();
+
     public abstract double getDouble();
+
     public abstract float getFloat();
-    public abstract boolean getBoolean();
+
     public abstract BigDecimal getBigDecimal();
 
     @Override

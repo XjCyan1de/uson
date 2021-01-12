@@ -81,11 +81,6 @@ public final class ByteBackend extends ValueBackend {
     }
 
     @Override
-    public boolean getBoolean() {
-        return false;
-    }
-
-    @Override
     public BigDecimal getBigDecimal() {
         return new BigDecimal(value);
     }

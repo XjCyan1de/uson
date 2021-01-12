@@ -33,46 +33,55 @@ public class JsonNull extends JsonNode {
     JsonNull() {
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isNull() {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull CharSequence asRaw() {
         return asString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asString() {
         return "null";
     }
 
+    /** {@inheritDoc} */
     @Override
     public @NotNull String asEscapedString() {
         return asString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void toSimpleJson(Appendable appendable) throws IOException {
         appendable.append(asRaw());
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
+    void toPrettyJson(Appendable appendable, IndentType indentType, int tabs) throws IOException {
         toSimpleJson(appendable);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Null";
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return INSTANCE == this ? super.hashCode() : INSTANCE.hashCode();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         return obj instanceof JsonNull;

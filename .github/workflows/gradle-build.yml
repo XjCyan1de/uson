@@ -24,4 +24,4 @@ jobs:
       uses: eskatos/gradle-command-action@v1
       with:
         gradle-version: current
-        arguments: build -Pgithub.tag=${{ github.ref }} -Psonatype.user=${{secrets.SONATYPE_USERNAME}} -Psonatype.password=${{secrets.SONATYPE_PASSWORD}}
+        arguments: build -Psonatype.user=${{secrets.SONATYPE_USERNAME}} -Psonatype.password=${{secrets.SONATYPE_PASSWORD}}

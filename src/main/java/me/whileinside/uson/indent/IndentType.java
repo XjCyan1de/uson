@@ -28,6 +28,9 @@ public enum IndentType {
     ONE_TAB('\t', 1),
     TWO_TABS('\t', 2);
 
+    public static final IndentType[] VALUES = values();
+    public static final int COUNT = VALUES.length;
+
     private final char value;
     private final int length;
 

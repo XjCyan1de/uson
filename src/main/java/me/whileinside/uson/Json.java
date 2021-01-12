@@ -30,6 +30,8 @@ import java.util.*;
  */
 public final class Json {
 
+    private static final Indent[][] INDENT_CACHE = new Indent[IndentType.COUNT][];
+
     private static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
     private static final Keyword[] KEYWORDS = new Keyword[]
@@ -55,21 +57,27 @@ public final class Json {
     }
 
     /* ============================= Json Options =================================== */
-    public static final int PRETTY_PRINTING         = 1;                              //
-    public static final int CACHE_BUFFERED_VALUES   = 1 << 1;                         //
-    public static final int AUTO_UNESCAPE           = 1 << 2;                         //
-    public static final int CHECK_RAW_VALUES_ONLY   = 1 << 3;                         //
+    public static final int PRETTY_PRINTING = 1;                              //
+    public static final int CACHE_BUFFERED_VALUES = 1 << 1;                         //
+    public static final int AUTO_UNESCAPE = 1 << 2;                         //
+    public static final int CHECK_RAW_VALUES_ONLY = 1 << 3;                         //
     public static final int DEFAULTS = CACHE_BUFFERED_VALUES | CHECK_RAW_VALUES_ONLY; //
     public static final int NO_OPTIONS = 0;                                           //
     /* ============================================================================== */
 
     private static final Json defaultInstance = new Json();
 
-    private IndentType _indentType = IndentType.ONE_TAB;
-    private Indent[] _indentCache = new Indent[4];
+    private IndentType _indentType;
+    private Indent[] _indentCache;
 
-    private int _bufferLength = 1024;
-    private int _options = DEFAULTS;
+    private int _bufferLength;
+    private int _options;
+
+    public Json() {
+        setIndentType(IndentType.ONE_TAB);
+        setBufferLength(1024);
+        setOptions(DEFAULTS);
+    }
 
     public boolean isAutoUnescape() {
         return hasOptions(AUTO_UNESCAPE);
@@ -109,6 +117,7 @@ public final class Json {
 
     public void setIndentType(IndentType indentType) {
         _indentType = indentType;
+        _indentCache = INDENT_CACHE[_indentType.ordinal()];
     }
 
     public void setBufferLength(int bufferLength) {
@@ -367,7 +376,7 @@ public final class Json {
 
             appendable.append('\n');
 
-            for (;;) {
+            for (; ; ) {
                 appendable.append(getIndentString(tabs));
                 toPrettyJson(elements.next(), appendable, tabs + 1);
 
@@ -395,7 +404,7 @@ public final class Json {
 
             appendable.append('\n');
 
-            for (;;) {
+            for (; ; ) {
                 Map.Entry<String, JsonNode> element = elements.next();
 
                 appendable.append(getIndentString(tabs));
@@ -434,7 +443,7 @@ public final class Json {
                 return;
             }
 
-            for (;;) {
+            for (; ; ) {
                 toJson(elements.next(), appendable);
 
                 if (!elements.hasNext()) {
@@ -456,7 +465,7 @@ public final class Json {
                 return;
             }
 
-            for (;;) {
+            for (; ; ) {
                 Map.Entry<String, JsonNode> element = elements.next();
 
                 appendable.append('"');
@@ -533,22 +542,27 @@ public final class Json {
     Indent getIndent(int size) {
         if (size < 0) throw new IllegalArgumentException("size must be greater than or equal to zero");
 
-        if (_indentCache.length <= size) {
-            Indent[] indentCache = new Indent[Math.max(_indentCache.length*2, size)];
-            System.arraycopy(_indentCache, 0, indentCache, 0, _indentCache.length);
+        synchronized (INDENT_CACHE) {
+            if (_indentCache == null) {
+                INDENT_CACHE[_indentType.ordinal()] = _indentCache = new Indent[4];
+            }
 
-            _indentCache = indentCache;
+            if (_indentCache.length <= size) {
+                Indent[] indentCache = new Indent[Math.max(_indentCache.length << 1, size)];
+                System.arraycopy(_indentCache, 0, indentCache, 0, _indentCache.length);
+
+                INDENT_CACHE[_indentType.ordinal()] = _indentCache = indentCache;
+            }
+
+            Indent indent = _indentCache[size];
+
+            if (indent == null || indent.getType() != _indentType) {
+                _indentCache[size] = indent = new Indent(_indentType, size);
+            }
+
+            return indent;
         }
-
-        Indent indent = _indentCache[size];
-
-        if (indent == null || indent.getType() != _indentType) {
-            _indentCache[size] = indent = new Indent(_indentType, size);
-        }
-
-        return indent;
     }
-
 
     public static Json defaultInstance() {
         return defaultInstance;
@@ -605,7 +619,7 @@ public final class Json {
                     builder.append("\\f");
                     break;
                 default:
-                    if(ch <= '\u001F' || ch >= '\u007F' && ch <= '\u009F' || ch >= '\u2000' && ch <= '\u20FF') {
+                    if (ch <= '\u001F' || ch >= '\u007F' && ch <= '\u009F' || ch >= '\u2000' && ch <= '\u20FF') {
                         builder.append("\\u").append(toUTF16(ch));
                     } else {
                         builder.append(ch);

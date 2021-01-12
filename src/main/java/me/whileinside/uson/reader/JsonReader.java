@@ -26,7 +26,7 @@ import java.util.Arrays;
 /**
  * @author Unidentified Person
  */
-public class JsonReader {
+public final class JsonReader {
 
     private final Reader _reader;
     private final int _bufferLength;

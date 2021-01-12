@@ -34,7 +34,7 @@ public class JsonTest {
 
     @BeforeEach
     void init() {
-        json = new Json();
+        json = Json.defaultInstance();
         json.setOptions(NO_OPTIONS);
     }
 

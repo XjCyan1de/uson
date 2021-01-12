@@ -48,6 +48,11 @@ public final class Indent {
         return _size;
     }
 
+    @Override
+    public String toString() {
+        return "{" + _size + "x" + _type + "}";
+    }
+
     public CharSequence getValue() {
         return _value;
     }

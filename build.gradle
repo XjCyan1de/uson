@@ -46,7 +46,43 @@ test {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            customizePom(pom)
+            pom {
+                name = 'Uson'
+                description = 'The simple fast json parser on pure java'
+
+                url = 'https://github.com/unidpers/uson'
+
+                organization {
+                    name = 'com.github.unidpers'
+                    url = 'https://github.com/unidpers'
+                }
+
+                issueManagement {
+                    system = 'GitHub'
+                    url = 'https://github.com/unidpers/uson/issues'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                scm {
+                    url = 'https://github.com/unidpers/uson'
+                    connection = 'scm:https://github.com/unidpers/uson.git'
+                    developerConnection = 'scm:git://github.com/unidpers/uson.git'
+                }
+
+                developers {
+                    developer {
+                        id = 'unidpers'
+                        name = 'Unidentified Person'
+                        email = 'unidpers@gmail.com'
+                    }
+                }
+            }
 
             groupId = group
             artifactId = name
@@ -67,53 +103,6 @@ publishing {
             credentials {
                 username = findProperty('sonatype.user')
                 password = findProperty('sonatype.password')
-            }
-        }
-    }
-}
-
-def customizePom(pom) {
-    pom.withXml {
-        def root = asNode()
-
-        root.dependencies.removeAll { dep -> dep.scope == "test" }
-
-        root.children().last() + {
-            resolveStrategy = DELEGATE_FIRST
-
-            description 'The simple fast json parser on pure java'
-
-            name = 'Uson'
-            url = 'https://github.com/unidpers/uson'
-
-            organization {
-                name = 'com.github.unidpers'
-                url = 'https://github.com/unidpers'
-            }
-
-            issueManagement {
-                system = 'GitHub'
-                url = 'https://github.com/unidpers/uson/issues'
-            }
-
-            licenses {
-                license {
-                    name = 'The Apache License, Version 2.0'
-                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                }
-            }
-            scm {
-                url = 'https://github.com/unidpers/uson'
-                connection = 'scm:https://github.com/unidpers/uson.git'
-                developerConnection = 'scm:git://github.com/unidpers/uson.git'
-            }
-
-            developers {
-                developer {
-                    id = 'dev'
-                    name = 'Unidentified Person'
-                    email = 'unidpers@gmail.com'
-                }
             }
         }
     }

@@ -23,8 +23,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle  
       - name: Prepare to publish
         run: |
-          echo '${{secrets.GPG_KEY_CONTENTS}}'
-          echo '${{secrets.GPG_KEY_CONTENTS}}' | base64 -d > publish_key.gpg
+          echo "${{secrets.GPG_KEY_CONTENTS}}" | base64 -d > publish_key.gpg
           gpg --quiet --batch --yes --decrypt --passphrase="${{secrets.SECRET_PASSPHRASE}}" \
           --output secret.gpg publish_key.gpg
       - name: Create Release
@@ -51,4 +50,4 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           gradle-version: current
-          arguments: test publish -Pgithub.tag=${GITHUB_REF##*/} -Psigning.secretKeyRingFile=secret.gpg -Psigning.keyId=${{secrets.SIGNING_KEYID}} -Psonatype.user=${{secrets.SONATYPE_USERNAME}} -Psonatype.password=${{secrets.SONATYPE_PASSWORD}}
+          arguments: test publish -Pgithub.tag=${GITHUB_REF##*/} -Psigning.secretKeyRingFile=secret.gpg -Psigning.keyId=${{secrets.SIGNING_KEYID}} -Psonatype.user=${{secrets.SONATYPE_USERNAME}} -Psigning.password=${{secrets.SIGNING_PASSWORD}} -Psonatype.password=${{secrets.SONATYPE_PASSWORD}}

@@ -2,7 +2,7 @@
 [![](https://img.shields.io/github/issues/unidpers/uson)](https://github.com/unidpers/uson/issues)
 [![](https://img.shields.io/github/downloads/unidpers/uson/total)](https://github.com/unidpers/uson/releases)
 [![](https://img.shields.io/github/workflow/status/unidpers/uson/gradle-build)](https://github.com/unidpers/uson/actions)
-[![](https://jitpack.io/v/unidpers/uson.svg)](https://jitpack.io/#unidpers/uson)
+![](https://img.shields.io/nexus/r/com.github.unidpers/uson?server=https%3A%2F%2Foss.sonatype.org)
 
 Description
 -----------
@@ -17,9 +17,16 @@ Add as dependency
 > Maven
 ```xml
 <repositories>
+    <!-- For snapshots -->
     <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+        <id>sonatype-snapshots</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+    
+    <!-- For releases -->
+    <repository>
+        <id>sonatype-releases</id>
+        <url>https://oss.sonatype.org/service/local/repositories/releases/content</url>
     </repository>
 </repositories>
 
@@ -27,20 +34,22 @@ Add as dependency
     <dependency>
         <groupId>com.github.unidpers</groupId>
         <artifactId>uson</artifactId>
-        <version>1.3.4-SNAPSHOT</version>
+        <version>1.3.4-RELEASE</version>
     </dependency>
 </dependencies>
 ```
 > Gradle
 ```groovy
-allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
+repositories {
+    // for releases
+    maven { url 'https://oss.sonatype.org/service/local/repositories/releases/content' }
+        
+    // for snapshots
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
-    implementation 'com.github.unidpers:uson:1.3.4-SNAPSHOT'
+    implementation 'com.github.unidpers:uson:1.3.4-RELEASE'
 }
 ```
 Usage

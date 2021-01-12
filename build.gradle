@@ -5,9 +5,10 @@ plugins {
 }
 
 group = 'com.github.unidpers'
-archivesBaseName = 'Uson'
-
 version = findProperty('github.tag') ?: 'undefined'
+
+println("Building artifact: ")
+println("${project.group}:${project.name}:${project.version}")
 
 repositories {
     mavenCentral()
@@ -48,7 +49,7 @@ publishing {
             customizePom(pom)
 
             groupId = group
-            artifactId = archivesBaseName
+            artifactId = name
             version = project.version
 
             from components.java
